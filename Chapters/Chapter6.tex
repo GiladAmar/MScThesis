@@ -1,0 +1,679 @@
+% Chapter6
+
+\chapter{Radio Astronomy Application} % Main chapter title
+
+\label{Chapter6} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{Chapter 6. \emph{Radio Astronomy Application}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+%neutral hydrogen
+
+%unaffected by dust
+%MOTIVATION
+As a result of atmospheric effects little of the electromagnetic spectrum of astronomical origin reaches the Earth \citep{wilson2009tools}\citep{thompson1994interferometry}.
+Unless stated otherwise all everything written in chapter 2 is from the two textbooks Interferometry and Synthesis in Radio Astronomy by Thompson, Moran and Swenson and the Tools of Radio Astronomy by Wilson, Thomas, Rohlfs and H{\"u}ttemeister.
+Radio, visible light and some ultraviolet light reach sea level.
+This is the primary reason we have almost entirely only radio and optical telescopes on Earth.
+This radio window available to Earth-based telescopes is from $30$ MHz to $300$ GHz\citep{van2009radio}.
+
+%HISTORY
+The first astronomical detection of an extra-terrestrial source emitting radio waves was by Karl Jansky\citep{thompson1994interferometry}.
+This source was identified as being from the Milky Way.
+Many new objects such as radio galaxies, pulsars and quasars have been discovered as a result\citep{thompson1994interferometry}.
+
+
+%PARABOLIC REFLECTOR
+Circular apertures are the most commonly used radio antennas.
+Imaging is done with bolometers (CCD Cameras).
+The field of view is set by the instrument at the focal plane.
+Images of the sky can be mosaiked together to cover large areas.
+Radio Telescopes have a higher velocity resolution than optical telescopes.
+
+%INTERFEROMETER MOTIVATION
+Radio astronomy, being based on the much longer electromagnetic radio waves than that of visible light, has difficulty obtaining high resolution images.
+The formula
+\begin{equation}
+\theta=\frac{1.22\lambda}{D}
+\end{equation}
+where $\lambda$ is the wavelength and $D$ the dish diameter gives an approximation for the size of the resultant resolution of the image\citep{wilson2009tools}.
+For optical telescopes using values of $D=5$m and $\lambda=500$nm a resolution of approximately $20$marcsec is achieved.
+Contrasted with a radio dish of $D=100$m and $\lambda=2.8$cm the resolution is just $1$arcmin, a stark difference.
+Increasing the diameter of the dish, the most obvious way to increase to arcsecond or subarcsecond resolution requires massive dishes that are unfeasibly large and expensive.
+The largest single and fully steerable aperture is the $100$m Green Bank Telescope in the USA. 
+Larger than that is the Arecibo Observatory with an aperture diameter of $305$m in Puerto Rico.
+Such large non-steerable telescopes, due to the nature of their support structure, are limited in their field of view.
+The Arecibo Observatory can only has fourty-five degree cone of visibility about the local zenith.
+As dishes are limited in their size another means of increasing the effective aperture is needed.
+Interferometry is the method by which to use many smaller telescopes to synthesize the equivalent aperture of a massive telescope.
+
+\section{Interferometry}
+
+
+%projected baseline changes for source
+
+
+
+If an extremely large satellite is not possible the most simple way to fill the aperture of what would be a large satellite is to use many small radio telescopes\citep{wilson2009tools}.
+The gaps in this array mean that there is much less light collecting power.
+Interferometers are sensitive to certain spacial scales as the aperture is not completely filled in a way that will be explained later.
+These smaller dishes can then be made to cover more area of the aperture by allowing for the Earth's rotation to drag them out over more area.
+In addition moving the very telescopes themselves allows for covering even more area such as in the VLA\citep{VLAWashingtonPost}.
+In simple terms an interferometer simulates a large telescope where the more baselines - number of possible pairs of telescopes - the more sensitive\citep{thompson1994interferometry}.
+The different lengths of the baselines correspond to mapping the radio on different spacial scales\citep{thompson1994interferometry}.
+
+%SINGLE BASELINE INTERFEROMETER
+[picture Aperture Synthesis Imaging Huib Intema]
+Consider a single baseline(pair of antennas) of radio telescopes pointing at the same source.
+Although they are both gazing at the same object there is a time delay between the arrival of the signal at dish 2 to dish 1.
+The detector is sensitive to electric field strength, which will be different at both detectors because of the geometry introduced time-delay.
+The time delay is determined by the extra distance the light must travel to the next antenna and the speed at which light travels.
+
+\be
+\tau_g = \frac{\vo{b}.\vo{s}}{c}
+\ee
+where $b$ is the position vector describing the baseline position and $s$ the unit vector in the direction of the source and $c$ is the speed of light.
+
+The readings on telescope 1 and 2 will be
+\be
+V_1=Ecos[\omega(t-\tau_g)]
+\ee
+
+\be
+V_2=Ecos(\omega t)
+\ee
+
+respectively, where $E$ is the electric field strength and $\omega$ is the angular frequency.
+
+These two readings then go through the correlator which multiplies the signals giving the product
+\be
+P[cos(\omega \tau_g)+cos(2\omega t -\omega \tau_g)]
+\ee
+where P is the received power, $P=\frac{E^2}{2}$
+The correlator also time averages the output, which will make the second term(rapidly varying in time) average to zero.
+What results is the average produce $R_C$, dependent on baseline orientation and source direction,
+\be
+R_C=Pcos(\omega \tau_g)=Pcos(2\pi \frac{\vo{b}.\vo{s}}{\lambda})
+\ee
+
+$R_C$ is not function of the observation time (provided the source is not variable), the baseline location (provided the source is in the far-field) nor the phase of the incoming signal.
+Product $R_C$ strength is dependent on the antenna collection area and electronic gains which need to be calibrated for.
+
+To illustrate the response we will consider the dot product $\vo{b}.\vo{s}$ in one dimension.
+\be
+ \frac{\vo{b}.\vo{s}}{\lambda}= \mu cos(\alpha)=\mu sin(theta)=\mu l
+\ee
+where $\mu$ is the baseline length is wavelengths $(\vo{\mu}=\frac{\vo{b}}{\lambda})$ and $\theta$ is the angle with respect to the palne perpendicular to the baseline and $l$ is the direction cosine $l=cos(\alpha)=sin(\theta).$
+
+[descriptive picture here, angles and fringes]
+
+For a baseline of $\mu=10$ 
+\be
+R_C=cosa(20\pi l)
+\ee
+Over the whole sky as $l$ varies $0$ and $1$ fringes will form over the whole hemisphere of the sky.
+There will be $2\mu$ fringes formed with a peak separation of $\frac{1}{\mu}$ radians.
+
+The real sensors do not have isotropic response to the whole sky, but are modulated by what is known as the beam pattern.
+For many parabolic telescopes there is a narrow beam of response, but there will be side-lobes making the instrument sensitive to radio signals not directly being pointed at.
+
+There is a complimentary product also generated in the correlator.
+A `sine' product is made by inserting a 90 degree phase shift in one of the signal paths which outputs
+
+\be
+P[sin(\omega \tau_g) +sin(2\omega t -\omega \tau_g)]
+\ee
+Taking the time average again nullifies the second term resulting in the product
+\be
+R_S=Psin(\omega \tau_g).
+\ee
+We now define a complex function known as the visibility, $V$, from the independent and real correlator outputs $R_C$ and $R_S$.
+\be
+V=R_C-iR_S=Ie^{-i\phi}
+\ee
+where $I=\sqrt{R_C^2 +R_S^2}$ and $\phi=tan^{-1}(\frac{R_S}{R_C})$.
+
+As it so happens the visibility is nothing but the Fourier transform of the sky brightness $I_\nu$, at a particular wavelength, and the response $V_\nu$.
+\be
+V_\nu (\vo{u}=\int \int I_\nu (\vo{l})e^{-2\pi i \vo{u}.\vo{l}}d\vo{l}
+\ee
+
+A single baseline interferometer, at any one time, takes one measurement of the visibility function.
+Enough such measurements spanning the domain of the visibility function allows one to do the inverse Fourier transform to solve for $I_\nu$.
+Sampling enough of the visibility function and over an appropriate range is a difficult challenge.
+
+Taking the spacing between interferometers to zero gets the single-dish (total-power) response as we would expect.
+In general, as baselines get longer, the visibility amplitude will decline.
+When the visibility is close to zero, the source is considered to be `resolved out', unable to make out.
+
+Interchanging antennas in a baseline, $(\vo{u}\rightarrow -\vo{u})$, causes the visibility to become the complex conjugate of the original.
+This property makes the visibility Hermition
+\be
+V_\nu(\vo{u})=V_\nu^*(-\vo{u})
+\ee
+
+
+For an extended source the correlator can be thought of as casting a sinusoidal coherence pattern of scale $\approx \lambda/b$ onto the sky.
+The correlator multiplies the sky brightness by its casted coherence pattern and then sums over the result.
+Ideally the sky brightness should appear to be zero from regions outside that of the interest, however due to the side-lobes, power from other regions will be included.
+Orientation and coherence of the projected coherence pattern is determined by the baseline geometry.
+Orientation of the projected baseline determines coherence pattern orientation.
+Baseline length is inversely correlated with the fringe separation, or scale of sensitivity.
+
+From the reference frame of the Earth, sources appear to move across the sky.
+Interferometer telescopes can track the object across the sky.
+As they point toward different directions $\vo{u}$ changes,(projected baselines will appear different) this in turn changes the correlator coherence pattern orientation and scale.
+For fixed telescopes the response to the same source at different elevations will vary, whereas mobile telescopes the response will be the same.
+The movement of the interferometer will also change the time delay between baseline pairs.
+This needs to be accounted for in the inserted time delay with an accuracy of $\delta \tau << \frac{1}{\delta \nu}$ to minimize bandwidth loss.
+This time delay is often done electronically in a delay loop.
+
+
+What an Interferometer measures is Visibilities.
+A Visibility is a complex number; the amplitude tells how much of a certain spacial frequency component is present, the phase tells the orientation of this component.
+
+In any interferometer set-up there will be a central hole in the UV-coverage.
+This is because you cannot put two radio telescopes on top of each other.
+The shortest baseline will set a maximum angular scale (MAS) that can be observed accurately with an interferometer.
+It is for this reason that there needs to be a range of baselines to resolve structures on different scales.
+Smooth structures larger than the MAS begin to be resolved out, or not seen.
+All flux scales larger than approximately $\lambda \times MAS$ are completely resolved out.
+To observe structures of this size either more observations with a single-dish are necessary or a more compact array of telescopes with smaller baselines.
+Greater coverage of the UV plane gives greater image fidelity and greater dynamic range.
+A measurement set is the set of visibilities measured every few seconds, on every baseline for every frequency channel.
+
+The interferometer sensitivity can be calculated from
+\be
+\sigma=\frac{\rho T_{sys}}{D^2 \eta_C \sqrt{N(N-1)}\Delta \nu t_{int}}
+\ee
+where $\rho$ is the antenna efficiency (which included the RMS surface accuracy and area of telescope), $T_{sys}$ is the effective system temperature(a measure of the noise in the receiver),$D$ the diameter of the dish, $\eta_C$ the correlator efficiency, $N$ the number of radio telescopes in the interferometer, $\Delta \nu$ the bandwidth (including the number of polarizations) and $t_{int}$ is the total integration time of the observation.
+
+
+System noise can be expressed with an equivalent noise temperature from the Nyquist formula:
+\be
+P_\nu=k_BT_{sys}
+\ee
+Contributions to the noise power $P_\nu$ and hence $T_{sys}$ ,related by the Boltzmann constant $k_B$, come from the receivers themselves, the atmosphere, Cosmic Microwave Background and spillover from the ground.
+The atmosphere attentuates the source signal and emits proportionally to the attenuated signal:
+\be
+T_{sky}\approx 273L (1-e^{-\tau A})
+\ee
+where $\tau$ is the opacity and $A$ the airmass.
+Attenuation of the signal varies strongly with frequency, generally increasing, and depends heavily on weather conditions (especially the water vapor content) and the source elevation (as this changes the total mass of air in the way)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Radio Frequency Interference}
+
+Radio astronomy measurements are not only limited by the radio window set by Earth's atmospheric attenuation but also by radio frequency interference (RFI) \citep{offringa2010post}.
+As radio is the only frequency domain aside from the optical that may be observed with ground based telescopes it is vital to keep this band protected.
+Exploring the radio($\approx 300\mu$m-$30$m) spectrum gives us a view of the cosmos that cannot be seen elsewhere in the spectrum.\citep{van2009radio}
+Radio telescope sensitivity has doubled every 3 years, a factor of 100 000 since Grote Reber\citep{van2009radio}.
+This has led to increasing data loss for passive radio services\citep{fridman2001rfi}.
+Basic excision of RFI ruined data trough visualization, accepting the data-loss, has often been the default solution\citep{fridman2001rfi}.
+This becomes more difficult when using broadband or multi-station interferometry systems in which their will often be interference in some frequency of baseline respectively.
+Advances in technology and computing power must therefore be taken advantage of in order to deal with RFI.
+Methods of mitigating RFI come in two broad categories: regulatory (spectrum management) and technical (RFI mitigation)\citep{van2009radio}. 
+Regulatory methods means putting legalized limits on the active (signal broadcasting)use of certain radio frequency bands.
+Technical methods try to remove the RFI signals from astronomy observations.\citep{van2009radio}
+
+Spectrum management is all about assigning part of the radio spectrum for use by competing services and demands.
+This is done by allocating acceptable limits on the band that services may use.
+Over a hundred new satellites are added every year and there are new applications and sources of radio that must be accommodated without interference\citep{van2009radio}.
+The international Administrative spectrum management body is the International Telecommunication Union, ITU [(www.itu.int)]\citep{van2009radio}.
+naturally this is only binding for all members of the ITU.
+They have the task of allocating for various sectors such as, telecommunication, safety, aeronautics, science and hobbyists.
+For many services the increasing radio noise is not a problem as they are not as sensitive, and can transmit more power to overwhelm the RFI signal\citep{van2009radio}.
+However radio telescopes are much more sensitive and cannot "listen" harder for the signal over the noise or increase celestial radio sources' power.
+National Administrations often ten to prefer regularization and spectrum pricing.
+Billions of dollars are involved with the buying of small regions of the radio spectrum, making it hard for radio telescopes to compete.\citep{van2009radio}
+Permissible data loss as a percentage in the allocated RAS bands have been defined in the ITU-R literature as 2\% for single systems and 5\% for aggregate systems.
+Data loss from bands allocated to other services are considered acceptable as astronomers have a no-protection principle\citep{fridman2001rfi}.
+In some cases there are limits on the acceptable RFI in bands, however the acceptable amount is too much for astronomical use.
+In addition, there are multiple levels of administration managing passive and active radio services.
+The result, removing RFI sources will require interactions with many levels of administration, often entirely different authorities in different countries.
+There is little financial incentive to avoid RFI considering added filters and launch costs resulting from the increase in weight.\citep{van2009radio}
+
+Enhancing RFI protection for radio observatories requires multiple methods; proper regulation, enforced national and local protection, and efficient technical RFI mitigation techniques\citep{fridman2001rfi}.
+Radio observatories are set up in remote locations to avoid man-made spectrum use.
+Of these, most are surrounded by a Radio Quiet Zone (RQZ)\citep{van2009radio} which is set up using national law.
+The RQZ typically is broken up into two zones[cohen et al 2005]. 
+The exclusion zone in which radio emissions, housing and industrial developments are forbidden.
+A larger co-ordination zone (up to 100km radius) envelops the exclusion zone, in which transmission power is limited based on radio telescope interference studies.\citep{van2009radio}
+
+Regularization will not be enough protection against interference.[paragraph from Radio Frequency Interference [elkers]
+Some experiments require the use of particular parts of the spectrum and different times, and different locations, so a flexible approach is possible.
+However in order to get the necessary sensitivity and spectral line (redshift) coverage some experiments require the use of very large bandwidths , part of which my be unprotected\citep{fridman2001rfi}.
+Astronomers often tackle this problem using 'dynamic access', simply using those bands when they know they'll be quiet and avoiding them otherwise\citep{fridman2001rfi}.
+At present, only 1-2\% of the meter and centimeter bands is reserved for astronomy and other passive - no transmission- uses.[morimoto 1993]
+The millimeter waveband has much larger sections cordoned off for passive use, however these may not necessarily be in the experiment-required regions.
+Increasing regulations may impede development in telecommunications.
+In addition, regularization will not be enough to get rid off all interference  effects.
+
+Interference comes in many classes and the word is often used to refer to specific sources - such as man-made.
+In this text we will adopt the definition of interference being any unwanted received signal.
+As astronomers tend to use a wide spectrum within the radio, much of the artificial interference is legal, but problematic.
+
+RFI can be broken up into two classes, internal and external.
+Internal sources may include equipment as part of the telescope itself, cables, computers and cooling systems.
+The direct method of throttling these sources of interference will include, shielding, separate power circuits and reducing electronics in the telescopes vicinity.
+Equipment such as correlators and computers are commonly surrounded by Faraday Cages.
+Some entire buildings are shielded against the possibility of radio emission leaking out.\citep{van2009radio}
+External sources may be moving or static.
+Mitigation methods will differ for the two cases.
+a moving source is hard to model, or re-calibrate the equipment in order to account for it, unlike static constant sources.
+Interference doesn't have to be artificial, like the sun, bright radio sources and lightening.
+Artificial sources are many; broadcast services such as TV and Radio, telecommunications, computers, navigation systems (GPS), radar, remote sensing,car spark plugs, microwave ovens, electric fences and power lines.[Goris 1998]\citep{ekers2000radio}.
+Some of the most significant sources of external RFI  include Digital Video Broadcasts (DVB), GSM, UMTS, aviation broadcasts and radio amateur activity.
+The overwhelming majority of such electronics operate in the allowed radio-bands, however their may be leakage into protected bands; interference being $10^{11}$ than signals from the early universe.
+Some sources are constant, such as television and radio broadcasts, however transient sources such as radar and aviation radio do exist.
+If the affected wavebands and the operation of such artificial sources is known, the outcome can be modeled and interference removed.
+Transient sources are more difficult to detect, manage and to understand their impact on measurements.
+
+In general artificial interference can be avoided by placing the detectors in remote and radio-quite locations.
+That is easier said than done as the number of such locations is quickly decreasing.
+The SKA itself will be in a radio-quite zone in the Karoo.
+However, not all external sources of man-made RFI can be escaped like this.
+Satellites in orbit with telecom or other communication systems will briefly, but often traverse the sky overhead.
+
+All is not lost in the fight against RFI.
+Most RFI enters the telescope through the side-lobes, from directions far from where the telescope is being pointed.\citep{van2009radio}
+[increases when pointed along ground level.]
+As radio signals live in a high dimensional space there is a lot of information in which they can differ.
+Radio signals can differ in several parameters such as: time, frequency, intensity, polarization, distance, positivity and multi-path.
+telecommunication services face a similar problem and have tackled the issue with smart antennas and software.
+Radio signal attributes that Radio astronomy may exploit are time, frequency, phase among others.
+In pulsar studies the time/frequency dispersion relation my be utilized.
+Antenna arrays may consider the curvature of the wave-front considering the position and distance phase space.
+Man-made RFI is usually polarized, so some astronomical signals can be observed by only measuring the unpolarized component:
+\be
+\sqrt{I-(U^2+Q^2+V^2)}
+\ee
+No single method addresses all possible sources of RFI\citep{fridman2001rfi}.
+Because all methods require the detection of RFI, a multi-layered approach to RFI removal advisable\citep{fridman2001rfi}.
+The many paths to RFI removal include\citep{fridman2001rfi}:
+Characterizing the RFI identifying sources and eliminating them where possible.
+Spectrum Management
+Quiet zones establishment
+Cognitive radio and ultra-wife band applications[?]
+Identification at which point in the detection scheme different RFI removal methods should be used
+Digital and sub-space filtering using knowledge of RFI features.
+Post-correlation thresholding using wide-band spectrometers
+adaptive noise canceling of well-defined/modeled RFI signals
+RFI mitigation algorithms embedded into correlators
+Automatic post-correlation RFI flagging algorithms
+Identification and removal of terrestrial sources using fringe-rate compared with that of celestial sources in the post-correlation data-stream. 
+
+As RFI removal algorithms are generally non-linear and depend on Interference to Noise ratio as well as RFI characteristics, quantitative evaluation of ,methods is not always possible.
+Removing RFI has unintended consequences of removing  good data as well as affecting the gain calibration of the instrument\citep{fridman2001rfi}.
+
+
+
+\section{Big Data Challenges}
+\section{MeerKAT and the SKA}
+\subsection{Current Methods for tagging RFI}
+
+\subsection{Manual tagging of RFI}
+
+
+
+
+
+\section{Radio Data}
+Structure, formats, amount, sources
+Issued
+
+a) the Measurement Set (MS)
+- developed by Cornwell, Kemball, and Wieringa between 1996 and 2000
+- designed to store both interferometry (multi-dish) and single-dish data
+- supports (in principle) any setup of radio telescopes
+- supports description and processing of the data via the Measurement Equation
+- fundamental storage mechanism: CASA Tables (inspired by MIRIAD)
+- MS = table for radio telescope data (visibilities) + auxiliary sub-tables 
+[http://www.eso.org/projects/alma/arc/tw/pub/External/EUARCCASATutorialJan2012/casa-intro-eso-0112.pdf]
+
+
+
+Measurement Set (MS). Logically, it is a generalized description of data from any interferometer or single-dish telescope. Physically, it is several tables in a directory on disk. Tables in CASA are actually directories containing files that are sub-tables. If you create a MS called 'AM675.ms', the sub-tables are stored in the directory AM675.ms/. Calibration solutions or images will also be written to disk as directories and sub-directories.
+The MAIN data table is arranged so that each row is a single timestamp for a single spectral window and a single baseline. 
+There are several columns. DATA holds the original visibility data, CORRECTED holds the calibrated data, MODEL holds the Fourier inversion of a particular model image, and IMAGING\_WEIGHT holds the weights to be used in imaging.
+Occasionally, you will need to specify a column for a particular task, so it is useful to know about them.
+
+
+Vectors
+Visibility = $(u,v)$
+Image
+
+
+$V_{ij} = M_{ij} Bi_{ij} G_{ij} D_{ij} \int E_{ij} P_{ij} T_{ij} F_{ij} S I_v (l,m) e ^{-i2\pi} (u_{ij}l+v_{ij}m)dl dm +A_{ij}$
+$A = $additive baseline-based error componentJones Matrices
+
+Matrices are:
+$M =$ Multiplicative baseline error
+$B = $Bandpass response
+$G =$ Generalised electronic gain
+$D =$ Polarisation leakage
+$E =$ (antenna voltage pattern) - primary beam effects
+$P = $Parallactic angle dependancde
+$T = $Tropospheric effects
+$F = $ionospheric Faraday rotation
+$S =$ mapping of $I$ to the polarization basis of the other variables and indicies are:
+
+$l,m$ = image plane coordinates
+$i,j$ = telescope ID pairs = baseline
+$u,v$ = Fourier plane coordinates
+
+Radio data obtained is from the Kat-7[cite] radio interferometer.
+
+ 
+ 
+ 
+\section{Data Preprocessing}
+
+Data multi-dimensional array.
+
+
+Visibilities, complex numbers, have to be labelled by several variables 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{verbatim}
+#Author: Gilad Amar
+#Date: 17-03-2015
+#Title: Pixel Extractor v1.0
+#Description: 	Make a feature set of pixel attributes from an MS File. 
+#		For every baseline 1% of the pixels are extracted.
+#		Baselines are iterated through, then random channels and sequenceNo are generated.
+#		Many of the featuers are complex numbers, those are hnadled by amplitue and phase.
+#		Phases and other features which are angles can wrap around , so the cosibne and sine
+#		of phases is taken as extra features.
+#		Features are saved to file with the and time are randomized then the 
+#		complex-valued intensities for the four polarizations are 
+#		extracted and printed to a feature set file.
+# ------------------------------------------------------------------------
+#import mpi4py.MPI as MPI
+from pyrap.tables import table
+import numpy as np
+import matplotlib.pylab as plt
+from matplotlib.colors import LogNorm
+import fileinput
+import os.path
+import sys
+import time
+import pyrap.measures as pm, pyrap.tables as pt, pyrap.quanta as qa
+import pylab
+
+# ----------HYPER PARAMETER INITIALIZATION AND OUTPUT FOLDERs SET UP------------
+print 'Number of arguments:', len(sys.argv), 'arguments.'
+print 'Argument List:', str(sys.argv)
+fractionToExtract=0.01				#Fraction of total pixels to extract
+MSfile = sys.argv[1]				#pre-flagged MS file name
+pathName, fileName = os.path.split(MSfile)
+header="Filename, Object_ID, Antenna1, Antenna2, Channel, Timestamp,\
+	XX_amp, YY_amp, XY_amp, YX_amp,\
+	XX_stdFromMean, YY_stdFromMean, XY_stdFromMean, YX_stdFromMean,\
+	XX_cos, YY_cos, XY_cos, YX_cos,\
+	XX_sin, YY_sin, XY_sin, YX_sin, I_amp, Q_amp, U_amp, V_amp,\
+	I_stdFromMean, Q_stdFromMean, U_stdFromMean, V_stdFromMean,\
+	I_cos, Q_cos, U_cos, V_cos,\
+	I_sin, Q_sin, U_sin, V_sin,\
+	Flag" 
+
+if not os.path.exists("DATA"):			#Create DATA and PLOTS directories in working directory 	
+    os.makedirs("DATA")				#if they don't already exist				
+if not os.path.exists("PLOTS"):
+    os.makedirs("PLOTS")
+# ----------------------------FUNCTION DEFINITIONS-----------------------------
+#
+def phaseToCosSin(inputPhase):			#returns cosine and sine of angle(rad)
+    return np.cos(inputPhase),np.sin(inputPhase)
+  
+# ----------------------------PROGRAM START------------------------------------
+#----------------OPEN MS FILE AND EXTRACT OBSERVATION BASIC PARAMS------------
+start_time = time.time()			#Start the program timer
+
+print "Load MS File and obtain meta-info"
+t = table(MSfile, readonly=True, ack=False)	#Open MS file in pyrap.tables class
+A1 = t.getcol("ANTENNA1")			#Load Antenna1 as numpy row
+A2 = t.getcol("ANTENNA2")			#Load Antenna2 as numpy row
+totalAntennas= len(np.unique(A1))		#Calculate no. of antennas
+baselines=(totalAntennas*(totalAntennas-1))/2	#Calculate no. of baselines
+print "totalAntennas=",totalAntennas
+print "baselines=",baselines
+totalPixels=0.0
+totalRFI=0.0
+
+FIELD_TBL=pt.table(t.getkeyword('FIELD'))
+fieldID=FIELD_TBL.getcol('SOURCE_ID')
+fieldNames=FIELD_TBL.getcol('NAME')
+print "Fields=",fieldID
+print "Field Names=",fieldNames
+
+# ---------------------BUILD BASELINE LIST FOR ITERATION LATER-------------------
+ant1=[]
+ant2=[]
+for i in range(totalAntennas):			#Build up list of all baselines as two lists eg.
+  ant1=ant1+[i]*(totalAntennas-1-i)		#ant1=[0,0,0,0,0 1,1,1,1,...5]
+  ant2=ant2+range((i+1),totalAntennas)		#ant2=[1,2,3,4,5,2,3,4,5,...6]
+  
+# ----------------------------BASELINE ITERATION-------------------------------
+for b in range(baselines):				#Iterate through baselines
+  #--------------------------ITERATE THROUGH OBJECT IDS----------------------------
+  for f in fieldID:
+    print "Loading Baseline ",ant1[b],"-",ant2[b]," FieldID ",f," ...(Takes the longest) "
+    queryString="ANTENNA1=="+str(ant1[b])+" && ANTENNA2=="+str(ant2[b])+" && FIELD_ID="+str(f)	#String for query command to database	
+						#This command only pulls out data relating to basline
+						#ANTENNA1=ant1 and ANTENNA2=ant2
+						#From here on all data relates to this basline ONLY.
+    workingTable=t.query(queryString)		#Execute command. Returns pyrap table.
+    DATA=workingTable.getcol("DATA")		#Extract DATA Column(3 dimensional array [no in 
+						#sequence,channel,polarization])
+						#Pol=0,1,2,3 corresponds to cross correlation XX,YY,XY,YX respectively
+    TIME=workingTable.getcol("TIME")		#Extract Time column corresponding to sequence no.
+    FLAG=workingTable.getcol("FLAG")		#Extract FLAGS for DATA. Same shape as data.
+
+    # ---------------------------EXTRACT Percent RFI---------------------------
+
+    
+    #*********************************************ALTER UNNECCESARY CALCULATION FOR EVERY BASLINE
+    sequenceNo,channels,polarizations=DATA.shape[0],DATA.shape[1],DATA.shape[2] #Determine how many data points per time series, 
+							#the number of channels and the (unsurprising) no. of polarizations
+    print "Sequences= ",sequenceNo
+    print "Channels= ",channels
+    print "Polarizations= ",polarizations
+    
+    pixelsPerBaselineFields=sequenceNo*600		#Calculate no of pixels in waterfall plot of channels versus time
+    print "pixelsPerBaselineFields= ",pixelsPerBaselineFields
+    totalPixels+=pixelsPerBaselineFields		#TOTAL NUMBER OF PIXELS
+    totalRFI+=float(np.count_nonzero(FLAG[:,200:800,:]*1))/4.0
+    targetCount=int(fractionToExtract*pixelsPerBaselineFields)	#No. of pixels to extract from each baseline image.
+    print "targetCount= ",targetCount
+
+    # ---------------------------EXTRACT RANDOM PIXEL INFORMATION---------------------------
+    print "Generate random sequenceNo and channels, then extracting corresponding features..."
+    Rchannel=np.random.randint(200,800,size=(targetCount))#Excluding pixels in 0-200 and >800 range. 
+							  #Bandpass filters have no response here.
+    if channels<1023:					  #If the no. of channels is less than the full amount don't do cut.
+							  #Usefull on smaller files.
+      Rchannel=np.random.randint(600,size=(targetCount))
+    RtimeStamp=np.random.randint(sequenceNo,size=(targetCount))
+    
+    Visibility=DATA[RtimeStamp,Rchannel,:]		#Extract Visibilities
+    pixelMask=FLAG[RtimeStamp,Rchannel,:].any(axis=1)*1	#If pixel flagged in any polarization the whole is considered flagged.
+							#Flags come as True or False, converted to 1 or 0.
+    # ----------------------VECTORISED FEATURE CALCULATION------------------------------
+    print "Vectorised feature building..."
+    vis1Abs,vis2Abs,vis3Abs,vis4Abs=np.abs(DATA[:,200:800,0]),np.abs(DATA[:,200:800,1]),\
+      np.abs(DATA[:,200:800,2]),np.abs(DATA[:,200:800,3])
+    Amp1mean,Amp2mean,Amp3mean,Amp4mean=np.mean(vis1Abs),np.mean(vis2Abs),np.mean(vis3Abs),np.mean(vis4Abs)
+    Amp1std,Amp2std,Amp3std,Amp4std=np.mean((vis1Abs-Amp1mean)**2),np.mean((vis2Abs-Amp2mean)**2),\
+      np.mean((vis3Abs-Amp3mean)**2),np.mean((vis4Abs-Amp4mean)**2)    
+    
+    XX_vis, YY_vis, XY_vis, YX_vis = Visibility[:,0],Visibility[:,1],Visibility[:,2],Visibility[:,3]	#Pixel visibilities
+    XX_amp,YY_amp,XY_amp,YX_amp=np.abs(XX_vis),np.abs(YY_vis),np.abs(XY_vis),np.abs(YX_vis)		#Visibility Amplitude
+    XX_stdFromMean,YY_stdFromMean,XY_stdFromMean,YX_stdFromMean=(XX_amp-Amp1mean)/Amp1std,\
+      (YY_amp-Amp2mean)/Amp2std, (XY_amp-Amp3mean)/Amp3std, (YX_amp-Amp4mean)/Amp4std			#Std Deviations from mean
+    
+    XX_cos,XX_sin=phaseToCosSin(np.angle(XX_vis))
+    YY_cos,YY_sin=phaseToCosSin(np.angle(YY_vis))
+    XY_cos,XY_sin=phaseToCosSin(np.angle(XY_vis))
+    YX_cos,YX_sin=phaseToCosSin(np.angle(YX_vis))
+
+    #Stokes parameters are defined by:
+    #I=XX_vis+YY_vis					
+    #Q=XX_vis-YY_vis
+    #U=XY_vis+YX_vis
+    #V=-1j*(XY_vis-YX_vis) 
+   
+    IAbs,QAbs,UAbs,VAbs=np.abs(DATA[:,200:800,0]+DATA[:,200:800,1]),np.abs(DATA[:,200:800,0]-DATA[:,200:800,1]),\
+      np.abs(DATA[:,200:800,2]+DATA[:,200:800,3]),np.abs(-1j*(DATA[:,200:800,2]-DATA[:,200:800,3]))
+    Imean,Qmean,Umean,Vmean=np.mean(IAbs),np.mean(QAbs),np.mean(UAbs),np.mean(VAbs)
+    Istd,Qstd,Ustd,Vstd=np.mean((IAbs-Imean)**2),np.mean((QAbs-Qmean)**2),np.mean((UAbs-Umean)**2),\
+      np.mean((VAbs-Vmean)**2)
+    
+    I,Q,U,V=XX_vis+YY_vis,XX_vis-YY_vis,XY_vis+YX_vis,-1j*(XY_vis-YX_vis)
+    I_amp,Q_amp,U_amp,V_amp=np.abs(I),np.abs(Q),np.abs(U),np.abs(V)
+    I_stdFromMean,Q_stdFromMean,U_stdFromMean,V_stdFromMean=(I_amp-Imean)/Istd, (Q_amp-Qmean)/Qstd,\
+      (U_amp-Umean)/Ustd, (V_amp-Vmean)/Vstd	
+    
+    I_cos,I_sin=phaseToCosSin(np.angle(I))
+    Q_cos,Q_sin=phaseToCosSin(np.angle(Q))
+    U_cos,U_sin=phaseToCosSin(np.angle(U))
+    V_cos,V_sin=phaseToCosSin(np.angle(V))
+
+
+    # ------------------------PRINTING PIXEL DATA TO FILE--------------------------------
+    print "Printing to File..."
+    #Joining pixel attributes as columns together.
+    baselineAnt1=np.ones(targetCount)*np.array(ant1)[b]
+    baselineAnt2=np.ones(targetCount)*np.array(ant2)[b]
+    fileNameArray = [fileName]*targetCount
+    ObjectID=np.array([f]*targetCount)
+    
+    
+    output = np.column_stack((fileNameArray,ObjectID.flatten(),baselineAnt1.flatten(),baselineAnt2.flatten(),\
+      Rchannel.flatten(),RtimeStamp.flatten(),\
+      XX_amp.flatten(), YY_amp.flatten(),XY_amp.flatten(),YX_amp.flatten(),\
+      XX_stdFromMean.flatten(),YY_stdFromMean.flatten(),XY_stdFromMean.flatten(),YX_stdFromMean.flatten(),\
+      XX_cos.flatten(),YY_cos.flatten(),XY_cos.flatten(),YX_cos.flatten(),\
+      XX_sin.flatten(),YY_sin.flatten(),XY_sin.flatten(),YX_sin.flatten(),\
+      I_amp.flatten(), Q_amp.flatten(),U_amp.flatten(),V_amp.flatten(),\
+      I_stdFromMean.flatten(),Q_stdFromMean.flatten(),U_stdFromMean.flatten(),V_stdFromMean.flatten(),\
+      I_cos.flatten(),Q_cos.flatten(),U_cos.flatten(),V_cos.flatten(),\
+      I_sin.flatten(),Q_sin.flatten(),U_sin.flatten(),V_sin.flatten(),\
+      pixelMask.flatten()))
+    
+    featureFileName="DATA/"+fileName+"_Field_"+str(f)+"_Baseline_"+str(ant1[b])+'-'+str(ant2[b])+".csv"#Feature file name
+    #Save data to csv file with header and 5 sig figures.
+    np.savetxt(featureFileName,output,delimiter=',',fmt = "%s,%s, %s, %s,%s,%s, %s, %s, %s, %.5s, %.5s, %.5s,\
+	       %.5s, %.5s,%.5s, %.5s, %.5s, %.5s, %.5s,%.5s, %.5s, %.5s, %.5s, %.5s,%.5s, %.5s, %.5s, %.5s,\
+	       %.5s,%.5s, %.5s, %.5s, %.5s, %.5s,%.5s, %.5s, %.5s, %.5s,%s",header=header, comments='')
+ 
+    
+    # ----------------------GENERATING WATERFALL PLOTS-----------------------------
+    print "Generating Waterfall plots and saving to File..."
+    
+    for p in range(polarizations):		
+
+      picData=np.transpose(DATA[:,200:800,p])
+      picMask=np.transpose(FLAG[:,200:800,p])
+
+      masked_data = np.ma.array(picData, mask=picMask)	#Data with mask flagged points
+      
+      fig = plt.figure(figsize=(25,20))			#Create a figure of specified size
+      palette = plt.cm.jet				#Set up a colormap
+      palette.set_bad('k', 1.0)				#Set masked values to plot black
+      
+      mean_amp = np.average(np.abs(masked_data))		#Mean and Min Values used for scaling
+      min_amp = np.min(np.abs(masked_data))			#
+      
+      #Plot Real Part of Visibilities.
+      ax1 = fig.add_subplot(411)			
+      ax1.set_title('Visibility(Real) - Polarization:'+str(p))
+      im = ax1.imshow(picData.real, cmap=palette, vmax=mean_amp, vmin=-mean_amp,aspect='auto')
+      ax1.set_xlabel('Time')				#
+      ax1.set_ylabel('Channel')	
+      #ax1.axis([TIME[0], TIME[-1], 600, 800])#
+      
+      #Plot Imag. Part of Visibilities.
+      ax2 = fig.add_subplot(412)			
+      ax2.set_title('Visibility(Imaginary) - Polarization:'+str(p))
+      im = ax2.imshow(picData.imag, cmap=palette, vmax=mean_amp, vmin=-mean_amp,aspect='auto')
+      ax2.set_xlabel('Time')
+      ax2.set_ylabel('Channel')	
+    
+    
+      #Plot Magnitude of Visibilities panel. 
+      ax3 = fig.add_subplot(413)			
+      ax3.set_title("Visibility(Amplitude) with overlaid Mask- Polarization:"+str(p))
+      im = ax3.imshow(np.abs(picData), cmap=palette, vmax=mean_amp, vmin=min_amp, aspect='auto')
+      ax3.set_xlabel('Time')				
+      ax3.set_ylabel('Channel')				
+      
+      #Magnitude of Visibilities with black RFI flag overlaid.
+      ax4 = fig.add_subplot(414)								
+      ax4.set_title("Visibility(Amplitude) with overlaid Mask- Polarization:"+str(p))
+      im = ax4.imshow(np.abs(masked_data), cmap=palette, vmax=mean_amp, vmin=min_amp, aspect='auto')
+      ax4.set_xlabel('Time')
+      ax4.set_ylabel('Channel')
+
+      plt.tight_layout()				#Keep tight layout of plots
+      #plt.colorbar()
+      #plt.show()
+
+      plotName="PLOTS/"+fileName +"_Field"+str(f)+"_Baseline"+ str(ant1[b])+"-"+\
+	str(ant2[b])+"_Polarization_"+str(p)+".png"#Save plot to file PLOTS
+      fig.savefig(plotName)      
+      plt.close("all")	 #Close all plots. 
+			 #Python doesn't automatically write over them and clogs memory.
+    
+    # ------------------------------------------------------------------------
+    end_time = time.time()			#Stop the clock and print the time
+    print("Extraction time: %g seconds" % (end_time - start_time))#
+# ------------------------------------------------------------------------
+
+percentRFI=totalRFI*100/totalPixels#FIND PERCENTAGE OF PIXELS WITH RFI
+#featureFileName="DATA/"+ fileName+"_RFI_FRACTION.txt"#Feature file name
+#np.savetxt(featureFileName,percentRFI) #Save data to csv file with header and 5 sig figures.
+print "percentRFI= ", percentRFI
+\end{verbatim}

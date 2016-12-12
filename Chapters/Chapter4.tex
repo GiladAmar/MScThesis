@@ -1,0 +1,84 @@
+% Chapter4
+
+\chapter{Big Data in Science} % Main chapter title
+
+\label{Chapter4} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{Chapter 4. \emph{Big Data}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+
+
+\section{What is Big Data?}
+
+
+
+Big Data has been used ambiguously in many sources, here it will be defined as the  exponential growth of  and increasing availability of digital data that is difficult if not impossible to be handled by conventional software and hardware tools\citep{chen2014big}.
+The National Security Agency has estimated that the Internet handles 1,826 petabytes of data a day\citep{chen2014big}.
+By 2020 the amount of data is estimated to be 35 trillion gigabytes \citep{chen2014big}.
+Big Data's unprecedented size will require the development of advanced technologies and interdisciplinary teams.
+Machine learning has a vital part in the handling of such volumes of data.
+Challenges posed by Big Data are summaried with the three V's [c]
+
+Challenges posed by Big Data are summaried with the three V's [cite]\citep{chen2014big} volume, variety and velocity.
+That is the size, variation in data types and the processing rate required respectively.
+
+Volume is likely the result of a large number of examples, internet images for instance, with a large variety of class types - 'dogs','planes' etc - and high dimensionality, such as image size.
+It is difficult to scale current deep learning systems up significantly beyond their current state.
+Whilst computing power, and memory will surely increase, the latency involved in communication costs between cores, CPUs and different machines in a network dominates the time cost.
+Better high performance computing platforms with parallel machine learning algorithms will be needed for large datasets, neural nets and training.
+An additional difficulty with Big Data is that much of the data is incomplete or has noisy labels.
+Contrary to what Supervised algorithms may like most of the data is unlabeled, or if labeled, labeled unreliably.
+Deep Learning methods are more robust the difficulties by Big Data lacking labels with their ability to train unsupervised, without labels.
+
+Variety in big data include different sources, label tags and data formats including images, video, audio streams, graphics animations and unstructured text.
+To best use the data it seems natural that you would want to integrate as much informtion together to exploit.
+Deep learning is uniquely advantages for representation learning, deep-learning can learn good feature representations for classification.
+The suggested solution to the issue of variety is to learn data representations for the different sources, then integrate the learned features at different levels.
+[Ngiam et al] demonstrated deep learning algorithms may be used to integrate audio and video data.
+Their research showed that a single data structure may be learnt from the unlabelled data, and that learning these shared representations is capable of discovering correlations across multiple modalities.
+Still, numerous problems with integrating heterogeneous sources remain.
+How can conflicts be resolved?
+How can different sources be fused together efficiently and effectively?
+And will system performance increase with significantly larger and more data sources?
+
+Data is being generated at high velocity in many applications, for instance radio astronomy and the SKA.
+One method of dealing with such high throughput is the use of Online LEarning.
+Online learnign uses a signle instance at a time where the true label of the isnatcne will soon be available which can then refine the model.[71-76 \citep{chen2014big}]
+This is particulary useful for big data where the total dataset may be too large to be one machine at a time.
+Despite the promise of online learning, little success has been made.
+However the stochastic gradient descent common to some deep learning algorithms may be adapted to for online learning , instead using mini batches rather than single examples at a time.
+This compromise offers a good middle-ground between memory and running time.
+In association with high velocity is that data is often non-stationary mean data distributions =change over time.
+Usually such data is separated in chunks over a small time interval.
+The assumption is generally that data close in time are piece-wise stationary and highly correlated following a very similar distribution.
+An important result of this suggest that deep learning needs to acquire is the ability to learn data as a stream; deep online learning that is parrelizable, convergence guaranteed and without significant memory requirements.
+
+
+
+
+\section{Big Data Technologies}
+
+
+
+
+
+\section{Big Data in Science}
+
+
+
+
+  \subsection{LIGO}
+
+
+
+
+  \subsection{LHC}
+
+
+
+  \subsection{SKA}
+
+
+
+  \subsection{LSST}

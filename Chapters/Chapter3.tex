@@ -1,0 +1,1022 @@
+% Chapter 3
+
+\chapter{Deep Learning with Neural Networks} % Main chapter title
+
+\label{Chapter3} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{Chapter 3. \emph{Neural Networks}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+
+
+
+
+	\section{Introduction}
+    
+    
+    
+    
+    
+There are two main ways to introduce the concept of nueral networks.
+the first being the biological parallel from which it draws it's name.
+the second as a means of parametrizing a large non-linear function.
+I will inctroduce neural networks by the seceond means, and then revert back to explain some of the comparisons made with and insights drawn from nature.
+    	\subsection{Function Fitting}
+Imagine you want to build a tractable, highly non-linear parametric function for use as a predictor.
+A non-linear function is much more interesting than a linear one as it can capture finer differences in the data.
+First step, start with a linear function like in the matrix product $Y = AX$.
+Given some input $X$ you can contruct from a linear transform an output $Y$.
+Why start with ssomething linear in the first place?
+Because they are incredibly efficient to compute, with software (BLAS) and hardware (GPUs) that excel at computing them.
+They are numerically stable and have well behaved and efficient to compute derivatives.
+Finally, there are $O(N^2)$ parameters for $N$ inputs giving some room to fit to data.
+
+Next up is to introduce a non-linearity, that is what we want after all.
+Many types are possible and have been explored throughout machine learning research.
+However one of the simplest, but more recent additions to the non-linear arseanl is the Rectified Linear Unit (ReLU) or $max(0,X)$ which grows linearly for $X>0$ but is $0$ for $X<0$.
+The dereivitaiove is well behaved at $1$ for $X>0$ and $0$ where $X<0$ whihc is a usefull property for ttaining.
+
+the last step ij the process is tp simple repeat this process of linear function feeding into a ReLUs which again feed into another function and followed by more RelUs etc...
+Whilst the parameters are all part of linear functions the stack of such units is non-linear.
+Empiraclly deeper models require much fewer parametrs than 'shallow' models of the same representational power(refeernce)
+
+As with all other machine learning algorithms there needs to be a way to train the network tpo fit  the data.
+
+Lumping together many simple elements can produce a complex system\citep{bar1997dynamics}.
+One way in to achieve this is through networks.
+Networks differ in kind but they can all be characterized by the flowing components: a set of nodes, and connections between those nodes\citep{gershenson2003artificial}.
+Individual nodes can be thought of as computational units.
+They each receive input and process that information to generate an output.
+The processing may be very basic (such as a simple summation of the input) or be quite complex.
+Connections between the nodes determine the information flow.
+They may be unidirectional or bidirectional.
+Interactions between nodes leads to the emergent behavior of the network.
+
+
+
+[insert picture]
+
+
+
+Since the first neural network model developed by Warren McCulloch and  Walter Pitts in 1943\citep{mcculloch1943logical} who modelled a simple neural network with electrical circuits there have been many different alterations\citep{bengio2009advances}.
+These differences may be the activation and output functions, the topology of the network and the learning algorithms employed amongst other changes.
+The advent of significantly faster computers in the 50s allowed for larger networks\citep{bengio2009advances}.
+
+In 1955, IBM formed a research group to study pattern recognition and information theory under the leadership of nathaniel Rochester\citep{bengio2009advances}.
+They simulated abstract neural networks on their IBM 704 computer.
+By 1959 models called "ADALINE" and "MADELINE" that were similar to the perceptrons of today\citep{bengio2009advances}.
+MADELINE was more adcanced than her counterpart and was the first neural network applied to a real problem; eliminating echoes on phone lines.
+In 1962 a significant step was made, a learning algorithm was developed that could change weight values as a function of the prediction error\citep{bengio2009advances}.
+
+
+The simplest ANN possible uses nodes known as perceptrons\citep{mo2012survey}. 
+Developed in the 50s and 60s by Frank Rosenblatt,a perceptron consists of one or more inputs, a processor and has a single output\citep{mo2012survey}. 
+The flow of information follows a "feed-forward model".
+This means binary inputs ($x_1$, $x_2$, $x_3$ ...) are sent to the neuron, they are then processed and finally result in some output which can be the next perceptrons input.
+(insert perceptron image and cite). 
+Inputs are not fed in unchanged but are multiplied by some value ($w_1$, $w_2$, $w_3$...), known as a weighting. (cite)
+The weighting can be thought of as expressing the significance of the respective inputs to the output.
+The perceptron then sums all the input ($\sum_j w_j x_j$).
+Should the sum be greater than some threshold value, the perceptron outputs $1$, otherwise a $0$.
+Dropping the threshold allows the neuron to `fire', or output a one, more easily and vice versa.
+Just like the weights, the threshold value is a neuron parameter.
+The activation function, the function that determines the output of the neuron, a simple threshold in this case, can be modified.
+The main activation used today is that of a sigmoidal function which will be discussed shortly.
+
+The single-layer structure limits the possible functions the perceptron may learn \citep{mo2012survey}.
+In particular the exclusive-or function is beyond it's learning capability as shown in 1969 by Marvin Minsky and Seymour Papert \citep{minsky1969perceptrons}.
+
+
+		\subsection{Natural Comparison}
+
+"Neurotalk:"
+Where’s my neuron?
+‘This is how the brain works’ - G. Hinton
+A simple definition of an artificial neural network (ANN) was provided by an influential figure in neuro-computing, Dr. Robert Hecht-Nielson.
+He defines a neural network as "\textit{...a computing system made up of a number of simple, highly interconnected processing elements, which process information by their dynamic state response to external inputs.}" (cite)
+ANN are processing structures, whether hardware or algorithmic in nature, that are modelled after the neuron network within mammalian brains. (cite)
+To date ANNs have many orders of magnitude less neurons than the mammalian brains from which they are born.
+However small biological neuronal systems have been simulated rather well. (cite fish brain)
+Natural neurons receive input through synapses located on the dendrites of the neuron. [cite]
+When the signals received surpass a certain threshold the neuron is activated and emits a signal through the axon.
+Such a signal may be received at synapses and in tern activate other neurons.
+In the modelling of such a neural network, the true complexity is highly abstracted.
+These artificial neurons consist of inputs, like synapses, whose signal is multiplied by weights (or signal strength).
+Then a mathematical function determines the activation of the neuron.
+A separate function computes the output of the neuron, which may be dependent on reaching a threshold input.
+A higher weight means a higher input.
+Weights may also be negative, giving the effect of inhibiting the signal.
+Adjusting the weights one can change the output of the neuron.
+Changing one neuron to act as an AND logic gate is simple enough to do by hand, however for ANNs that have hundreds or thousands of neurons an algorithm must be employed to find all the weighs required fro the network to perform the desired task.
+
+
+
+        
+	\section{Training}
+    
+    
+    
+    	\subsection{Backpropogation/Gradient Descent}
+        
+        
+        
+[stochastic gradient descent]
+
+Geoffrey Hinton, around 1985, developed a multi-layer neural network that could learn more functions than than the single layer perceptron could \citep{mo2012survey}.
+Hinton also developed the learning algorithm for muti-layered neural networks call backpropogation.
+
+Backpropogation is a an algorithm used to train ANNs \cite{mcclelland1986parallel}.
+This is used in feed-forward ANNs, meaning networks where the neurons are organized into layers, each layer sending their signals forward to the next layer.
+There are at least two layers to such a neuronal network.
+The first layer, or input layer, and the last layer, the output layer.
+Should there be layers between, they are known as hidden layers.
+The output from all the input layer neurons are fed to all of the neurons within the second layer.
+Each of the neurons within the second layer are now making decisions of what to output based on the results from the first layer of decision making.
+This feed-forward system allows proceeding layers to make decisions at a more complex and abstract level than preceding layers \citep{krose1993introduction}.
+Backpropogation uses supervised learning so that the error, the difference between the expected and actual results, may be calculated.
+The algorithm trains the network by trying to reduce this error by alternating the weights.
+
+The activation function in this idealized network is just the weighted sum of all the input.
+
+\begin{equation}
+A_j(\vo{x},\vo{w})=\sum^n_{i=0}x_i w_{ji}
+\end{equation}
+
+Here $\vo{A}$ is the weighted sum of the input $\vo{x}$ multiplied by the connections respective weights $\vo{w_{ji}}$ or the dot product of $\vo{x}$ and $\vo{w}$.
+The output function is that of sigmoidal neurons,
+
+\begin{equation}
+O_j (\vo{x},\vo{w}) = \frac{1}{1+e^{A(\vo{x},\vo{w})}}
+\end{equation}
+
+close to zero for large negative numbers, equal to $0.5$ at zero and close to one for large positive numbers the sigmoidal function allows for smooth transition between the low and high neuron output.
+This output function is just a function of the activation function which is, in tern, just a function of the weights and input vector.
+
+Backpropogation uses the error defined as the difference between the output of the neurons in the output layer and it's expected output,
+
+\be
+E_j(\vo{x},\vo{w},d)=(O_j(\vo{x},\vo{w})-d_j)^2
+\ee
+
+where $d_j$ is the desired output of neuron $j$ in the output layer.
+The network error is will simply be the sum of all the errors from neurons in the output layer:
+\be
+E(\vo{x},\vo{w},d)=\sum_j (O_j(\vo{x},\vo{w})-d_j)^2
+\ee
+
+The adjustment made to the weights is done by using gradient descent:
+\be
+\Delta w_{ji}= -\eta \frac{\partial E}{\partial w_{ji}}
+\ee
+The change in weight $w_{ji}$ is equal to the negative of some user-defined constant ($\eta$) times the derivative of the error of the network with respect to $w_{ji}$.
+Segregating the derivative into two parts we obtain the derivative of $E$ with respect to the output $O_j$
+\be
+\frac{\partial E}{\partial O_j} = 2(O_j - d_j)
+\ee
+and the derivative of the output with respect to the weights,
+\be
+\frac{\partial O_j}{\partial w_{ji}}=\frac{\partial O_j}{A_j} \frac{\partial A_j}{\partial w_{ji}}=O_j (1-O_j)x_i
+\ee
+We can combine these two two derivatives to find that
+\be
+\frac{\partial E}{\partial w_{ji}} = \frac{\partial E}{\partial O_j}\frac{\partial O_j}{\partial w_{ji}} = 2 (O_j - d_j) O_j (1-O_j)x_i
+\ee
+Therefore the adjustment to each weight will be
+\be
+\Delta w_{ji} = -2 \eta (O_j - d_j)O_j(1-O_j)x_i
+\ee
+
+
+
+
+
+
+
+
+Bias
+
+ 
+
+		\subsection{Stochastic Gradient Descent}
+        
+        
+        
+        \subsection{Momentum, Adagrad etc...}
+        
+        
+        
+        \subsection{Learning Decay}
+        
+        
+        
+        \subsection{Activation Functions}
+        
+        
+        
+All neurons give their output as determined by an activation  function operating on the input.
+Non-linear functions are used so as to be able to approximate non-linear functions\citep{bengio2009advances}.
+The sigmoidal function $(f(x)=(1+e^{-x})^{-1})$ and $tanh$ are commonly used\citep{bengio2009advances}.
+Running gradient descent on such networks with saturating functions require more time to converge than non-saturating ones\citep{krizhevsky2012imagenet}.
+Rectified Linear Units, $f(x) = max(0,x))$(ReLUs)\citep{lecun2012efficient} train several times faster than  $tanh()$\citep{bengio2009advances}[Nair and Hinton]. 
+Much like the output model function can be trained , there is an activation fucntion itself that can be trained.
+In Maxout a single maxpout units makes a piecewise  linear approximation to an arbritary convex function.
+Not only are relationships between hidden nodes learn but also each units activation fucntion.
+Given input $x \in \mathbf(R)^d$, a maxout layer computes
+
+\be
+h_l(x)=max(z_{li}) where i\in [1,n]
+\ee
+$z_{li}=x^T W_{alm} +b_{lm}$ and $W\in \mathbf{R}^{d\times m\times n}$ and $b\in \mathbf{R}^{m\times n}$are learned parameters.\citep{bengio2009advances}
+ReLUs train significantly faster than their equivant with $tanh$ units\citep{krizhevsky2012imagenet}.
+They also have the advantageous property on not requiring normalizatiojn to prevent them saturation [meaning?]\citep{krizhevsky2012imagenet}..
+If just a few examples produce a positve input to a ReLU, learning will take place on that neuron.
+That said, local normalization schemes aid generalizatioon.
+%momentum
+% Simply put, a weighted average of prior gradient s is added to the gradient descent updates.
+%This momentum in a particular directioon makes the algorithm more resistant to minor noisy variations, particualrly in directions of high curvature in the cost function.
+
+
+
+        \subsection{Weight Initialization}
+        
+        
+        
+        *positive bias init
+        \subsection{Auto-encoders and DBN's}
+        
+        
+        
+        
+Dimensionality reduction serves classification, visualization communication and storage of high dimensional data\citep{hinton2006reducing}.
+A commonly used method, Principal Component Analysis (PCA), performs a transformation of the directions in the feature space to ones that have the greatest variance.
+Taking only the top N axis of the PCA feature space with greatest variance allows one to reduce the number of features used while still keep most of the information.
+
+Other data reduction algorithms exist that encodes high-dimensional data into a lower-dimensional code.
+A non-linear generalization of PCA using a multilayer neural network, known as an Autoencoder, has two parts.
+The encoder network transforms the high-dimensional data to a low-dimensional code; the decoder network reconstructs the original feature vector from the code\citep{hinton2006reducing}.
+A deep auto-encoder is nothing more than a multi-layered auto-encoder such that the output target is the input data\citep{dengthree}.
+
+Autoencoders start with initial random weights in both parts.
+Both networks are trained together by minimizing the discrepancy between the original data and the reconstructed data.
+
+An autoencoder with multiple hidden layers is hard to optimize as optimization schemes find poor local minima.
+With small initial weights, using a method such as back-propagation, the gradients in the early layers are insignificant making optimization infeasible.
+If however the original weights are close to a good solution back-propagation works well to fine-tune the weights\citep{hinton2006reducing}.
+
+A pre-training procedure was developed that trains one layer at a time.
+This procedure uses a two layer neural network called a restricted Boltzmann machine\citep{hinton2006reducing}\citep{ackley1985learning}\citep{hinton2010practical}.
+Restricted Boltzmann Machines are different from perceptron type neural networks in two ways.
+They are stochastic, neurons activate (become equal to one) with a probability given by the biases, weights and activations of the previous layer, and hidden layers do not connect to each other, hence `restricted'.
+
+A single Restricted Boltzmann Machine can be viewed as a three layer neural network.
+The input and output layer have the same number of neurons and the hidden layer neurons are not interconnected.
+Each such layer is trained such that the input is generated by last layer.
+Generating the input is not the useful aspect of this, but if you consider that the hidden layer has less neurons than the input layer, the information is going though a bottleneck forcing the RBM to find a smaller representation of the input vector to a feature vector.
+
+The joint configuration of the (\textbf{v},\textbf{h})of the RBM has an energy function\citep{hinton2006reducing} given by
+
+\be
+E(\textbf{v},\textbf{h})=-\sum_i b_i v_i - \sum_j b_j h_j -\sum_{i,j}v_ih_jw_{ij}
+\ee
+
+where $v_i$ and $h_j$ are the values of input vector (i) and feature vector(j) (hidden layer activations), $b_i$ and $b_j$ are their biases and $w_{ij}$ is the weight between them.
+The RBM can now assign a probability to every possible output through this energy function.
+
+The probability of the network generating a training image can be increased by adjusting the weights and biases to lower the energy of that image (increasing the odds of its generation) and raise the energy of similar yet different images that the network would prefer to the real data\citep{hinton2006reducing}.
+
+
+The binary state $h_j$ of each feature detector is set to one with a probability given by $\sigma (b_j+\sum_{vi} w_{ij})$, where $\sigma(x)$ is the logistic function.
+Once binary states have been decided for the hidden units, then upper layer is produced by setting each $\nu_i=1$ with a  probability of $\sigma (b_i+\sum_j h_j w_{ij})$ where $b_i$ is the bias of $i$.
+Now there is an 'imagined' reconstruction of the data in the final layer that the network would 'prefer' to generate.
+The rule for updating the weights such that the network's reconstructions more closely match the input data is\citep{hinton2006reducing}
+\be
+\Delta \omega_{ij} =\epsilon (\langle\nu_i h_j\rangle_{data} - \langle\nu_i h_j\rangle_{recon})
+\ee
+where $\epsilon$ is the learning rate, $\langle \nu_i h_j\rangle_{data}$ is the fraction of times that pixel $i$ and feature $j$ are on together when the feature detectors are driven by data (also called the positive gradient), $\langle \nu_i h_j \rangle_{recon}$ is the corresponding fraction for 'imagined' reconstructions (called the negative gradient).
+A simplified version of this same learning rule is applied to the bias terms.
+
+
+A single layer would not be the best way to model data structure.
+Instead, once one layer has been learned, we treat that hidden layers activities (when driven by data) as input for the next layer.
+The hidden layer of the first RBM becomes the visible first layer of the next RBM\citep{hinton2006reducing}.
+This layer by layer learning can be repeated indefinitely.
+In fact it has been shown that adding another layer always improves the lower bound on the log probability that the model assigns to the training data - as long as the number of feature detectors per layer does not decrease and their weights are initialized asymmetrically\citep{hinton2006reducing}.
+This bound does not apply when higher levels have fewer feature detectors, however a layer-by-layer pre-training algorithm is very effective at training a deep auto-encoder known as Greedy Layer-Wise Training of Deep Networks\citep{bengio2007greedy}.
+Each layer in the chain finds high-order correlations between the activities of detectors in the layer below.
+
+After having trained several layers, the entire network can be 'unfolded' making an encoder and decoder network\citep{dengthree}.
+
+A decoder network is simply the encoder running in reverse.
+These two networks will initially  use the same weights and the one is the inverse of the other.
+At this stage global fine tuning using standard backpropogation can be used to optimize reconstruction, replacing the probabilistic activities with deterministic ones\citep{hinton2006reducing}.
+
+For continuous data the first level's hidden units remain binary whilst the visible units a replaced by linear ones with Gaussian Noise [explain]
+If the noise is of unit variance the update rule remains the same for hidden units but for visible it will sample from a Gaussian of unit variance and mean $b_i +\sum_j h_j w_{ij}$ \citep{hinton2006reducing}.
+
+
+A very deep auto encoder without training reconstructs the average of the training data even after many iterations of backpropogation tuning\citep{hinton2006reducing}.
+Auto-encoders of a single layer can learn without pre-training, however pre-training significantly reduces training time, tends to avoid local minima and increase the networks stability\citep{erhan2010does}.
+Deep auto encoders may produce lower reconstruction errors than a shallow auto encoder with fewer parameters, however this is not true as the number of parameters increases.
+Autoencoders in general outperform latent semantic analysis (LSA) a document retrieval algorithm based on PCA\citep{hinton2006reducing}.
+Additionally they perform better than local linear embedding, another non-linear dimensionality reduction algorithm.
+Pre-training helps generalization as it ensures most of the information comes from modelling the input data.
+information obtained from labels is used to only slightly adjust weights found by the pre-training.
+Compared with other non-parametric algorithms auto-encoders provide a map from the data to the lower dimensional code and back, can be applied to huge sources of data and total training scales linearly with the number of training samples\citep{hinton2006reducing}.
+
+Of course this basic introduction ignores the many alterations one can make to an auto-encoder, single or multi-layered.
+De-noising auto-encoders for instance operate by corrupting the input to the hidden layer. 
+The corruption of data can be done via setting a fraction of the inputs to zero, the fraction of which i
+
+
+
+
+self can be randomised.
+Regardless of the corruption procedure, the auto-encoder is now required to output the original, uncorrupted, input despite the added noise using criteria such as KL [?] distance between original inputs and reconstructed inputs.
+
+[generative vs discriminative fine tuning]\citep{mo2012survey}
+
+
+Autoencoders have found great use as a method to map images a to a short binary code.
+Similarly for coding documents, known as semantic hashing, where the flip of any one bit from $0$ to $1$ will call up another document or image very similar to the first.
+
+
+Borrowing insights from the success of CNNs, Sparse Autoencoders use units that also only connect to a local feature space\citep{bengio2009advances}.
+
+Using an autoencoder of three layers with an overcomplete hidden layer, a layer with equal to or more than the number of imput units.
+Auch autoencoders can be useful as feature extractors\citep{payan2015predicting}.
+An issue with an overcomplete layer is the risk that the autoencoder simply learns the identity function\citep{bengio2012practical}.
+Threfore addtional constraints are rquired, such as asparity constraints\citep{poultney2006efficient}.
+Sparsity constraints encourage most hidden units to be lcose to zero, and encourages the learnign of sueful filters fro convolution operations.
+This is particualy usefule in order to disentangle factorzs controlling the variability in such data.
+
+\be
+\hat{s}_j =\frac{1}{N} \sum^N_{i=1} [ a_j (x^{(i)})]
+\ee
+where $a_j(x)$ is the activation ofg unit $j$, given input $x$ averaged over the training set of N samples.
+$\hat{s}_j =s$ where $s$ is the hyper-parameter , typically close to zero, eg. $0.05$
+Such a constraint is enforced byt the addtion of a penalty term to the cost fucntion. based on teh concept of Kullback-Leibler divergence
+\be
+\sum^h_{j=1}KL(s||\hat{s}_j)
+\ee
+where $h$ is the number of hidden units in the layer, $j$ the summing index of the hidden units
+\be
+KL(s||\hat{s}_j)=slog(\frac{s}{\hat{s}_j})+(1-s)log \frac{1-s}{1-\hat{s}_j}
+\ee
+qauntifies the diergence between a Bernoulli distributomn with mean $s$ and another of mean $\hat{s}_j$.
+This term is $KL(s||\hat{s}_j)=0$ where $\hat{s}_j=s$, and increases as $\hat{s}_j$ moves away from $s$.
+This causes $\hat{s}_j$ to prefer values close to $s$
+The penalty term $\beta KL(s||\hat{s}_j)$ will be added to the cost fucntion, for example a mean squared error, whe $\beta$ is the hyper parameter controlling the relative weight of the of the term\citep{payan2015predicting}.
+
+
+
+
+Cross-entorpy cost function term  commonly used fro lcassification tasks\citep{glorot2010understanding}
+
+\be
+-\frac{1}{N}\sum^N_{i=1}\sum^3_{j=1}[\mathbb{1}\{y^(i)=j\}log(h_{W,b}(x^{(i)})_j]
+\ee
+$j$ sums over the numebr of classes, $h_{W,b}$ the function computed by the netwrok, $x^{(i)}$ and $y^{(i)}$ the input and label of the i'th  
+
+
+
+Without addtional constraints, an auto-encoder can learn the identity mapping, particularly if the hidden layer is as large as or larger than the input.
+There are several ways this can be countered.
+The use of probablasitc RBMs (discussed later), sparse coding and denoising auto-encoders.
+A de-noising AE works by trying to reconctruct the clean input from a partially corrupted one.
+The input $x$ becomes $\overbrace{x}$ with the addtion of a variable amout $v$ of noise.
+This may coem in the form of bianry noise, the inputs are on or off, or uncorrletaed gaussian noise.
+The percentage of permissible corruption $v$ .
+The denoising AE is trained by finding the latent representation $\textbf{h} = f_\theta(\bar{x}) = \sigma(W\bar{x}+b)$ with wich to reconstruct the original input  $\textbf{y} = f_{\theta'}(\bar{x})=\sigma(W'h+b')$.
+
+Boltzmann machine(BM) is a network of symmetrically connected neuron-like units which activate according to stochastic functions.
+In contrast, an Restricted Boltzmann machine(RBN)is a two layer BM where it is restricted in the sense that there are no visible-visible nor hidden-hidden connections w\textbf{v} and within the same layer.
+The RBM is a special case of a Markov random field having one layer of (usually Bernoulli) stochastic hidden units and one layer (either Bernoulli or Gaussian) stochastic visible units.
+represented as bipartite graphs, there are no visible-visible or hidden-hidden connections.
+Generally DBNs can be trained as a discriminative model (inference, classification etc..) or a generative model (generating training data, simulating etc)\citep{mo2012survey}.
+
+In an RBM the joint distribution $p(\textbf{v,h},\theta)$ over the visible units \textbf{v} and hidden units \textbf{h} given model parameters $\theta$ is defined in terms of the energy function $E=(\textbf{v,h},\theta)$ (related to Thermodynamics[reference])\citep{dengthree}:
+\be
+p(\textbf{v,h},\theta)= \frac{exp(-E(\textbf{v,h},\theta))}{Z}
+\ee
+
+where Z is the normalization factor, or partition function, $Z=\sum_\textbf{v} \sum_\textbf{h} exp(-E(\textbf{v,h},\theta))$
+
+The marginal probability that the model assigns to a visible vector $\textbf{v}$ is
+
+\be
+p(\textbf{v},\theta)  = \frac{\sum_\textbf{h} exp(-E(\textbf{v,h},\theta}{Z}
+\ee
+
+For a Bernoulli(visible to hidden) RBM the energy function is defined as 
+\be
+E(\textbf{v,h},\theta) = -\sum^I_{i=1} \sum^J_{j=1} w_{ij} v_i h_j - \sum^I_{i=1}b_iv_i - \sum^J_{j=1} a_j h_j 
+\ee
+
+where $W_{ij}$ is the symmetric interaction term between visible unit $v_i$ and hidden unit $h_j$, $b_i$ and $a_j$ are the bias terms with $I$ and $J$ are the numbers of visible and hidden units respectively.
+
+It follows that conditional probabilities are then:
+\be
+p(h_j=1|\textbf{v};\theta)=\sigma(\sum^I_{i=1}w_{ij}v_i +a_j)
+\ee
+
+and
+\be
+p(v_i=1|\textbf{h};\theta)=\sigma(\sum^J_{j=1}w_{ij}h_j +b_i)
+\ee
+
+where $\sigma(x)=\frac{1}{1+exp(x)}$
+
+
+In the case of Gaussian visible units to Bernoulli hidden ones:
+
+\be
+E(\textbf{v,h},\theta) = -\sum^I_{i=1} \sum^J_{j=1} w_{ij} v_i h_j - \frac{1}{2} \sum^I_{i=1}(v_i-b_i)^2 - \sum^J_{j=1} a_j h_j 
+\ee
+
+changing the conditional probabilities to
+\be
+p(h_j=1|\textbf{v};\theta)=\sigma(\sum^I_{i=1}w_{ij}v_i +a_j)
+\ee
+
+and
+\be
+p(v_i=1|\textbf{h};\theta)=N(\sum^J_{j=1}w_{ij}h_j +b_i, 1)
+\ee
+which is to say $v_i$ takes real values from a Gaussian distribution of mean $\sum^J_{j=1}w_{ij}h_j +b_i$ and variance $1$.
+A Gaussian Bernoulli RBM is useful to convert real valued stochastic variables to binary stochastic variables, which can then be further utilised by Bernoulli-Bernoulli RBMs.
+
+Other types of conditional distributions for the visible units ij the RBM can also be used[wleling et all 2005].
+
+Taking the gradient of the log-likelihood log $p(\textbf{v},\theta)$ an update rule may be derived as 
+
+\be
+\delta w_{ij}=E_{data} (v_i h_j) - E_{model} (v_i h_j)
+\ee
+
+where $E_{data}(v_ih_j)$ is the expectation observed in the training set and $E_{model}(v_ih_j)$ the same expectation under the distribution under the distribution defined by the model.
+However $E_{data}(v_ih_j)$ is intractable to compute and so the contrastive divergence (CD) approximation to the gradient is used where $E_{model}(v_ih_j)$ is replaced by a Gibbs sampler initialised at eh data for a full step.
+Steps are as follows:
+
+Initialize $V_0$ at data
+
+Sample $\textbf{h}_0 \sim \textbf{p(h}\vert \textbf{v}_0 ) $
+Sample $\textbf{v}_1 \sim \textbf{p(v}\vert \textbf{h}_0)$
+Sample $\textbf{h}_1 \sim \textbf{p(h}\vert \textbf{v}_1)$
+
+We have $\textbf{v}_1\textbf{,h}_1$ which serves as a rough estimate of $E_{model} (v_ih_j) = (\textbf{v}_\infty\textbf{,h}_\infty\textbf{)}$ which is a true sample from the model.
+The approximation to $E_{model}(v_i,h_j)$ leads to the one-step algorithm of CD-1.
+
+Similar to Sparse-Autoencoders, Sparse RBMs too can be made except trained by contrastive divergence rather than backpropogation
+{bengio2009advances}. 
+
+
+
+
+
+DBNs(slakhutdinov and hinton 2009,2012)are probabilistic generative models composed of multiple layers of stochastic hidden nodes/variables.
+A DBN of only one layer is just as RBM.
+Composing many RBMs the hidden layers can be efficiently learned using feature activations of the RBM below as input training data for the next producing a Deep Belief Network (DBN)\citep{dengthree}.
+The top two layers have undirected, symmetric connections between them whereas the lower layers receive top-down, directed connections from the layer above\citep{dengthree}.
+The ability to learn increasingly complex representations of the data make them apt for object and speech recognition.
+Furthermore a large supply  of unlabelled data is enough to build a DBN with a little labelled data required to fine tune it\citep{dengthree}.
+This is particularly useful for  image and speech recognition where the supply of unlabelled data is nearly unlimited\citep{dengthree}\citep{lecun1995convolutional}.
+
+
+Deep Belief Networks employ deep architecture to learn from labelled and unlabelled data effectively\citep{dengthree}.
+It makes use of an unsupervised pre-training stage followed by a supervised fine-tuning to build the models\citep{chen2014big}.
+Typically a DBN is a stack of Restricted Boltzmann Machines(RBMs) followed by additional layer/s for discriminative tasks\citep{dengthree}.
+RBMs are probabilistic generative models that learn a joint probability distribution of the training data without the use of labels.
+An RBM consists of two layers, nodes in the one layer are fully connected to nodes in the next\citep{chen2014big}, but there are no connections between nodes of the same layer.
+
+The entire stack of RBMs is trained layer by layer.
+Once the bottom layer has been trained -Gaussian-Bernoulli for applications with continuous features, or Bernoulli-Bernoulli for applications with binary features - , it's activation probabilities of it's hidden units  will be the input of the next layer (Bernoulli-Bernoulli) where that layer is now trained\citep{dengthree}.
+The training procedure repeats till all RBM's are trained.
+The layer by layer training avoids local optima and alleviates over-fitting\citep{dengthree}.
+In addition the algorithm is very time efficient which scales linearly with the number and size of the RBMs\citep{chen2014big}.
+Upper layer RBMs contain higher level features constructed from lower level ones from the layer below.
+In addition the hidden variables in the deepest layer are efficient to compute\citep{dengthree}.
+This stacking procedure given by [Hinton et al 2006] improves the variational lower bound on the likelihood of the training data under the composite model, which is to say it achieves maximum likelihood training.
+
+
+
+A simple RBM with a Bernoulli distribution for both visible and hidden layers samples from the probability distributions\citep{chen2014big}:
+
+\be
+p(h_j=1|\mathbf{v}; W) = \sigma (\sum^I_{j=1} w_{ij}\nu_{i}+a_j)
+\ee
+and
+\be
+p(v_i=1|\mathbf{h}; W) = \sigma (\sum^I_{j=1} w_{ij}h_{j}+b_i)
+\ee
+where $\mathbf{v}$ and $\mathbf{h}$ represent a $I\times1$ visible unit vector and a $J\times 1$ hidden unit vector respectively.
+W is the matrix of weights connecting visible and hidden layers.
+$a_j$ and $b_i$ are the bias terms and $\sigma(\dot{})$ is the sigmoid function.
+
+Where the visible units are real-valued a Gaussian-Bernoulli distribution is typically assumed, $p(v_i\vert \mathbf{h};W)$ is Gaussian.
+Weights are updated with an approximation method developed by Hinton called  contrastive divergence (CD) to avoid the issue of computing the log likelihood gradient\citep{mo2012survey}.
+CD is efficient enough to be practical\citep{mo2012survey}.
+The $n+1$-th weight will be updated as\citep{chen2014big}:
+
+\be
+\Delta w_{ij}^{(n+1)}=c w_{ij}^(n) + \alpha (\langle v_i h_j \rangle_{data} - \langle_i h_j \rangle_{model})
+\ee
+where $\alpha$ is the learning rate, $c$ the momentum factor, $\langle \dot{} \rangle_{data}$ and $\langle \dot{} \rangle_{model}$ are the expections under the distributions defined by the data and model respectively.
+Expectations may be calculated by using Gibbs samplings infinitely many times, in practice however one-step CD is used as it performs well.
+Other model parameters such as the bias terms can be updated in a similar manner.
+
+In a generative mode the RBM training involves  a Gibbs sampler to sample hidden units from visible units and vice versa using the two equations [label them]\citep{mo2012survey}.
+The weights are then updated through the CD rule and through the the process repeated till convergence.
+
+After pre-training input data is modelled by the weights between adjacent layers \citep{chen2014big}.
+A final layer is added on top to represent the output classifications where the entire network is now fine-tuned using labelled data and backpropgation.
+What goes to the top layer depends on the application.
+For speech recognition problems the output can represent syllables, phones, and sub-phones or phone states or speech units used in the HMM-based speech recognition system\citep{dengthree}.
+
+
+Some implementations put another layer on top of the RBMs called associative memory also determined by supervised learning methods\citep{chen2014big}.
+
+
+There are many variations for pre-training procedure.
+Instead of using RBMs some use stacked de-noising auto-encoders or stacked predictive sparse coding\citep{chen2014big}.
+
+Recent research has shown that when using large amounts of labelled data,a randomised initial neural network can also 
+very well without pre-training.
+As an example, a network of a single hidden layer is trained via backpropgation till convergence.
+Once completed a new layer is inserted between the output layer and the first hidden layer and again trained to convergence and so on until the previously defined number of hidden layers has been reached\citep{chen2014big}.
+Using a DBN to initialize the weights of a correspondingly configured  MLP reliably produces better results than an MLP of randomly initialised weights.
+The resulting network of an DNN initialized via a DBN is called a DBN-DNN\citep{dengthree}.
+
+In summary, DBN's use a greedy layer by layer approach to learn weights for each hidden layer and then fine-tune using backpropogation.
+This has been shown to increase performance\citep{chen2014big}\citep{jarrett2009best}.
+Such greedy-learning training-time increases linearly with the size and depth of the Network\citep{dengthree}.
+
+Insights from DBN greedy training have inspired advances in standard DNNs.
+Training DNN's alternatively layer by layer by considering each pair of layers as a de-noising auto-encoder regularized by setting a subset of the inputs to zero.
+
+After the effectiveness of DBN training was established, new methods of doing pre-training were developed. 
+One can learn a DNN by starting with a shallow neural network.
+Having trained this layer discriminitely - using early stops to avoid over-fitting-, a new layer is inserted between the previous hidden layer and the softmax output layer where the network is again discriminatively trained.
+This process is continued till the desired number of layers, or desired accuracy measures are met.
+Once the full number of layers have been trained this way a full backpropogation fine-tuning is carried out to further enhance the network\citep{dengthree}.
+
+There are many plausible variants such as a combination of a DBN with a CNN, forming a Convolutional Deep Belief Network (CDBNs) where there’s a pooling layer inserted between adjacent RBM layers in a DBN\citep{mo2012survey}.
+CDBNs are useful at dealing with images having large dimensions, performing better than DBNs\citep{mo2012survey}.
+
+
+        
+        
+        
+		\subsection{Batch Normalization}
+        
+        
+        
+        \subsection{Categorization Stages} 
+        
+        
+        
+        \subsection{Gradient Clipping}  
+        
+        
+        
+        \subsection{Final Layer Normalization} 
+        
+        
+        
+	 \subsection{Adverserial Training}
+        
+        
+        \subsection{GPU Speed Up}
+
+
+The typical CUDA-capable GPU has several multi-processors(MP)\citep{chen2014big} .
+Each one contains several streaming multiprocessors (SMs) to form a building block.
+Each SM have several stream processors (SP) that share control logic and low-latency memory.
+Each GPU has global memory, very high bandwidth, but large latency when accesed by the CPU.
+The architecture allows for two levels parallelism, the instruction level, MPs, and the thread level, SPs.
+The architecture allows for thousand of threads to run concurrently, suitable for arithmetic operations and low latency.
+This has been used to train models with over 100 million parameters from millions of training examples .
+For some layers in a CNN half the netowkr is computed on a single GPU, the other half on another.
+The two will only communicate on some  other layers.
+Such architecture takes advantage of cross-GPU parellization allowing GPUs to have little transfer between them and without using host memory.
+This method will be limited by the number of cores and memory capacity on the GPUs.
+        
+        
+              
+    \section{Regularization}
+    
+    
+        
+        \subsection{Dropout and Dropconnect}
+        
+        
+        
+Another method is that of Dropout\citep{hinton2012improving}, particularly useful in Neural networks, deep or shallow.
+The result from this method is the equivalent of trainign multiple networks and averaging their predictions.
+Considern the case of the neural network:
+The input vector, $v=[v_1,v_2,...v_n]^T$ and weight parameters of the corresponding layer, size $d\times n$ are used to produce the output vector for that layer, $r=[r_1,r_2,...r_n]^T$, with the learnt function $a$ like $r=a(Wv)$.
+Dropout affects this structure by randomly setting a fraction, \textbf{f=0.5} of the output of hidden neurons to zero.
+Neurons dropped out in this way contribute neither to forward -propogation nor backward propogation.
+This modifies the output function to now be $r=m*a(Wv)$ where $m$ is a $1\times d$ mask and $*$ an element-wise operator\citep{goyal2014object}.
+Now every time the input is injected the neural networks samples a different architecture but all these architectures share weightse\citep{krizhevsky2012imagenet}.
+The concept behind this is that dropout prevents co-adaptions from forming, where one neuron cannot rely on the presence of particular other neurons.
+Instead individual neurons learn to detect more robust features, helpful regardless of the large variety of internal contexts, or useful with many different random subsets of other neurons.
+DropConnect, the generalization of Dropout technique, instead of masking outputs the inputs are randomly turned off.
+Output is now given by, $r=a((M*W)v)$ with $M$ as the mask with the same dimension as $W$.
+This is a generalization of Dropout, where the mask $M$ is constrained in that \textbf{all} the input weights of particular neurons are either turned on or off\citep{goyal2014object}.
+As a result of this manipulation and multiple neural netwroks having been trained, all the outputs must be averaged by
+\be
+r=\frac{1}{||M||}\sum_M a((M*W)v)
+\ee
+where $||M||$ is the number oif binary masks.
+However, such a computer is infeasible due to the number of masks, $2^{n\times d}$\citep{goyal2014object} and an indicidual neural network often takes several days to traine\citep{krizhevsky2012imagenet}.
+Dropout is an efficent version of model combination that costs a dactor of two to training timee\citep{krizhevsky2012imagenet}.
+Instead a mean network is produced containing all the hidden units but with their outgoing weights multiplied by, the fraction of dropped units, a half to account for their being twice as many active neurons\citep{goyal2014object}.
+This average network is an approximation to the ideal of having an ensemble of such networks.
+Mathematically this is represented as
+
+\be
+\sum_M a((M*W)v) = a((\sum_M(*W))v)
+\ee
+This shows good performance but is not a mathematically sound approximation\citep{goyal2014object}.
+
+DropConnet differs from this method.
+Here, before the activation function $a()$ we alter the input to be $u_i=\sum_j(W_{ij}v_j)M_{ij}$.
+$M_{ij}$ is sampled from a bernoullis distribution.
+The of mean and variance of $u_i$ amy be calculated so that, $Mean(u_i)=pWv$ and $Variance(u_i)=p(1-p)(W*W)(v*v)$.
+Contructing a Gaussain with this mean and vcariance the values of $u_i$ may be sampled and then passed through the activation fuction $a()$, then avaeraged, and finally passed as input to the next layer\citep{goyal2014object}.
+
+        \subsection{Early Stopping}
+%Early Stopping
+%Letting the mopdel traing run till convergence may allow the model to overfit.
+%Early stopping allows you to prevent this from happening by stopping the algorithm when the model does best on teh valifation set (requiring a memory of prior model parameters and validation test scores), and so is general enough for new data, and not wait for the algorithm yto go all the way to convergence where it may fit the training data really well buyt has gone beyond the point where it is egneral.
+
+
+
+
+        \subsection{Parameter Averaging}
+        
+        
+        
+    	\subsection{Gradient Clipping}
+        
+        
+        
+    	\subsection{Norm Last Layer}
+        
+        
+        
+       
+
+
+    
+    \section{Parallel Training}
+    
+    
+    
+        \subsection{Data Parallelism}
+        
+        
+        
+        \subsection{Model Parallelism}
+        
+        
+        
+\section{Deep Learning}
+
+
+
+Most recently machine learning methods used shallow-structured architectures.
+These techniques typically use only one layer of non-linear feature transformations on the raw input into a problem-specific feature space.
+Popular approach used to be the construction of features from data that required deep knowledge andn insight into the data to engineer each feature\citep{bengio2009advances}.
+Commonly used examples of shallow algorithms include:
+Gaussian Micture Models(GMMs), Hidden Markov Models(HMMs), linear or non-linear dynamical systems, Conditional Random Fields(CRFs), maximum entropy models (MaxEnt) and the well-known Support Vector Machines (SVMs), logistic and kernel regression as well as artificial neural networks of one layer only\citep{dengthree}.
+Shallow architectures has proven to be successful  in solving many simple or well-constrained problems, however their limited modeling and representational power is often insufficient for dealing with complicated real world problems involving natural signals such as speech and image recognition\citep{dengthree}.
+For human-speech in particular, speech producing and perceiving systems exhibit hierarchical l;layered structure to take information from the waveform level of sound to a linguistic level of speech.
+[Baker et al 2009, 2009a; deng 1999, 2003]
+Similarly the visual systems are also hierarchical in nature.
+Pixels may be assembled into edgelets, edgelets to motifs, motifs to parts, parts to objects, and finally objects to scenes\citep{lecun2010convolutional}.
+This suggests our our machine learning methods adopt hierarchical structure presenting us with new problems.
+What do we put in these layers?
+How do we train multi-stage architectures?
+And how do we utilize the vast amount of unlabelled data?
+
+
+[George 2008; bouvrie 2009; poggio 2007]
+In addition, humans and animals seem to learn from the world without being supplied by labels all the time.
+We are also able to recognize future instances of an object with few, or even just one example.
+In classical machine learning the nature of animals developing their own internal representations is not tackled\citep{lecun2010convolutional}.
+Instead we craft case-specific features for use in a trainable classifier.
+This is now changing with the development of deep-learning methods.
+Deep learning can eliminate the deatureeztractor component altohgteher, feeding in the raw input the networks first few layers automatically adapt to an appropriate feature extractor\citep{lecun1995convolutional}.
+
+
+Deep learning is a developing field of Artificial Intelligence taking inspiration from observations of human brain mechanisms \citep{mo2012survey} \citep{chen2014big}.
+Capable of processing complex input data, learning in different domains and solving complicated tasks is something the brain does fast.
+Deep Learning aims to deal with high-dimensional data efficiently and quickly to perform complicated AI tasks such as visual and auditory recognition.
+Deep Architectures refer to multi-layer networks where adjacent layers are connected.
+As Bengio and Lecun put it,
+"deep architectures are compositions of many layers of adaptive non-linear components, in other words, they are cascades of parametrized non-linear modules that contain trainable parameters at all level" \citep{bengio2007scaling}.
+Deep learning refers to supervised and/or unsupervised techniques with many layers of information processing that learn hierarchical representations of the data for classification and feature or representation learning\citep{chen2014big} \citep{dengthree}.          
+While there were multiple deep architectures before 2006, almost none were successful is terms of accuracy and efficiency with the exception of Convolutional Neural Networks (CNNs) \citep{lecun1995convolutional}.
+In 2006 Geoffrey Hinton discovered Deep Belief Networks (DBNs)\citep{hinton2006fast}.
+
+Deep Learning methods have had many successful problem-solving applications.
+Visual document analysis \citep{simard2003best} \citep{karnowski2010deep}, facial\citep{le2013building}\citep{farfade2015multi} and speech, natural language processing and human action recognition \citep{ji20133d}\citep{mo2012survey}, facial location \citep{liu2014deep},image semantic discovery\citep{liu2014deep}image compression\citep{goyal2014object},collaborative filtering \citep{chen2014big}, and Medical Diagnosis\citep{goyal2014object}.
+
+Companies such as Google, IBM, Apple and Facebook have been aggressively pursuing deep learning projects.
+Google has used deep learning for voice recognition, Street View and image recogntion; Microsoft for their real-time language translation in Bing[cite] voice search, and IBM[cite] for their Jeaprody winning Watson[cite] \citep{chen2014big}.
+For example Siri, the iOS assistant that provides weather reports, news, answers questions, gives reminders utilizes the power of deep learning \citep{chen2014big}.
+As Big Data only gets bigger, deep learning will play a larger role in predictive analytics especially considering the advances in computing power and use of parallel processing in GPUs\citep{chen2014big}.
+
+Several other organizations have taken an interest in big Data and application of machine learning\citep{chen2014big} .
+In 2012 the USA launched a Big Data and Development Initiative to help solve many of the nations challenges.
+Several Federal agnecies have answered the call committing more than \$200 million dollars to support the harnessing of big data.
+In 2013, Obama anounced a brain mapping initive BRAIN(Brain Research through advancing Innovative Technologies) to develop the tools to understand the brain, and eventually how to cure brain disorders.
+[more...]
+
+The recent resurgence of interest in Deep Learning is a result of:
+Increased hardware capabilities, specifically GPUs
+Cheaper computing equipment
+and recent advances in machine learning research [justify]\cite{dengthree}
+
+Class of algorithyms have shown good results on benchmark datasets\citep{bengio2009advances}.
+Recent success in Deep-Learning techniques share additional properties
+the generative nature of the model, typically requiring the addition of a top layer for classification\citep{dengthree} making the top two layers with the addition of a label unit layer the associative memory\citep{mo2012survey}.
+An unsupervised training step that uses unlabelled data, which is much easier to obtain than labelled, to pre-train the learning-architecture, a method which will bee explained later \citep{dengthree}.
+
+DNNs require no prior knowledge of the data, can approximate any function with abritrary accuracy and can istimate posterioir probablities usefull in classifcation tasks and statistical analysis\citep{bengio2009advances}.
+
+DNNs typically require huge computational resources, that may make their training, and real time application difficult to implement\citep{goyal2014object}
+
+Once a Neural Network is trained new data cannot be added to it without retraining the entire network altogether. 
+A better understanding of high-level feature representation may be the key to adding new knowledge to alter the network without retraining the whole system, much like our brains add new information and learn new skills without a `reboot training'.
+
+To improve machine learnign classifaction performance you can collect larger datasets, learn more advanced models and use more powerful methods for overfitting prevention\citep{krizhevsky2012imagenet}.
+
+
+lthough the space of possible functions for a multi-layered neural network is larger than the single layered perceptron model, there are still several problems for using ANN's for machine learning  \citep{mo2012survey}:
+1) ANN's cannot train on unlabeled data, of which there is far more of than labelled data.
+2) The backpropogation correction signal gets severely weakened traveling backward through the neural network. Layers near the last layer are altered, however layers near the bottom are largely unaffected. This is known as the gradient dilution problem [begio 2009]
+3) Learning is very slow for networks of many layers.
+4) As a result of having so many parameters trained by gradient descent, the network is likely to end up in a poor local optima rather than the global optimum.
+The severity of poor local optima increases significantly as network depth increases\citep{dengthree}.
+5) Main deficiency of unstructured nets is their lack of built-in invariance with respect to translations, and distortions\citep{lecun1995convolutional}.
+The input is usally normalized and centered, inevitably imperfectly, for character recognition letters may appear with slant, size and position variations.
+Words on the other hand can be spoken at varying pitch, speed and intonation.
+In principle a sufficiently large network can learn to be invariant to such trasnformations, however that will likely result in multioplke units with identical weight patterns and the number of training instances required is very large\citep{lecun1995convolutional}.
+6) Due to the input data being vectorised and fed to the first layer the topology of the input is ignored.
+This is contrary to the fact that spectral representation of speech and images have strong local 2D structures, times series strong 1D local structure; pixels that are spacially or remporally nearby are highly correlated\citep{lecun1995convolutional}. 
+
+
+
+Bengio and Lecun proposed the following features would be features of a successful algorithm used in AI architectures \citep{bengio2007scaling} \citep{bengio2009learning}\citep{chen2014big}:
+1) functions with a large range of architectures
+2) handles deep architectures, manipulating intermediate concepts and many levels of non-linear steps
+3) samples from a large space of possible functions with many millions of parameters.
+4) trains efficiently when the number of parameters and training examples becomes very large. The learning algorithm must scale with parameters and data in a practical way. 
+Such a feature prohibits algorithms that iterate many times over the data.
+5) discovers concepts that can be utilised in multiple tasks(multi-task learning) and may use unlabelled data (semi-supervised data)
+
+
+
+\section{Feature Extraction Differences}
+
+
+
+SiFt
+Hog
+sift spin image textons
+
+
+
+    \section{Convolutional Neural Networks}
+    
+    
+    
+Intelligent tasks such as image or speech recognition require the construction of features that are invariant to irrelevant variations of the input.
+
+Deep Neural Networks have two problems
+1) The large number of trainable parameters in the fully-connected network allows for easy overfitting of data.
+2) Gradient descent does not filter down to lower layers, effectively meaning only the top few layers are trained resulting in a local optimum and not a good solution.
+
+Image variations are lighting conditions, translations, rotations, pose, scale conformation and obstructions amongst others\citep{liu2014deep}.
+In 1985 Yann Le Cun developed and algorithm to train Neural Netwrosk.
+This involved simplifying the architecture of a fully-connected DNN and use back-propogation to train\citep{bengio2009advances}.
+Convolutional Neural Networks are highly desirable in such tasks because of their trainable architecture more resilient to variations\citep{lecun2010convolutional}.
+ConvNets have been successfully used in many commercial projects including OCR, handwriting recognition (including Arabic and Chinese) in check reading at ATT and video surveillance\citep{bengio2009advances}.
+First commercially deployed in check reading ATM machines in Europe in 1993\citep{bengio2009advances}.
+Now Supervised Convolutional networks (ConvNets) are used by Google  to identify faces and license plates in Street-view images and blurs them to protect privacy\citep{bengio2009advances}.
+They also power obstacle avoidance for off road mobile robots as in the DARPA-sponsored LAGR program\citep{bengio2009advances}.
+Their use expands even further to image restoration and segmentation, which is particularly useful in the biological sciences.
+There exist unsupervised learning algorithms of convnets\citep{goyal2014object}. 
+Such pre-training has been shown to improve pattern classifcxation\citep{ciresan2012multi}.
+
+Another discriminative deep architecture is the Convolutional neural Network(CNN)\citep{dengthree}. 
+Hubel and Wiesels's research in 1962\citep{bengio2009advances} \citep{goyal2014object} indicates that there is a hierarchy within the visual cortex in living organisms in their work on cats primary visual cortex\citep{lecun1995convolutional}.
+Simple neurons of the upper layer are connected to a small region of the lower layer, performing a similar role to convolutional filters such as Garbor filters\citep{gabor1946theory}
+Their output is then fed to complex neurons whose role we simulate via pooling layers\citep{bengio2009advances}\citep{chen2014big}\citep{ciresan2012multi} .
+The first neural nets based on this were Fukushimas Neocognition and Lecun's Net-3\citep{bengio2009advances}.
+For several decades ANN research was stagnant, with neural networks unable to perform; they lacked a good trainign technique and sufficiently fast computers\citep{bengio2009advances}.
+In such an architecture the lower layer is divided into a smaller number or regions called Receptive Fields, each of which is mapped to a neuron of the upper layer.\citep{bengio2009advances}
+The connection is called a feature extractor.
+Many such Feature extractors are applied to the to the same receptive fields generating Feature vectors for that field.
+Advantages for thus architecture include:
+1) Sparse Connectivity - Rather than connect the entire lower layer to the upper layer, each receptive is connected to only one neuron. This reduces the number of parameters significantly making training much easier\citep{bengio2009advances}.
+2) Shared weights - Each one of the feature extractors is operated on each of the receptive fields in the lower layer\citep{lecun1995convolutional}.
+This significantly reduces the number of parameters that need to be learnt improving feed forward back-propagation\citep{mo2012survey}\citep{bengio2009advances}  improving its gneralization ability whilst their theoretical performance is only slightly worse than that of a fully connected DNN\citep{krizhevsky2012imagenet}\citep{lecun1995convolutional}.
+This means each receptive field is connected to the upper layer by an identical set of weights\citep{krizhevsky2012imagenet}.
+CNNs make strong, yet justified, assumptions in the stationarity of statistics and locality of pixel dependencies.
+Elementary feature detectors useful in one part of the image are likely to ben useful everywhere\citep{lecun1995convolutional}.
+
+
+\citep{mo2012survey}
+A typical CNN is composed of many layers; some for feature representations, known as feature maps, and others as a conventional neural network for classification.
+The input and output of each stage is a set of matrices called feature maps.
+In the case of a colour image, the input to the first layer can be thought of as an input of three feature maps; each a 2D array containing a colour channel of the image.
+For audio input (a time series), a 1D array; for a video (3 dimensions $X$,$Y$ and Time) or a volumetric image (such as an MRI)\citep{payan2015predicting} output feature maps would be 3D arrays themselves\citep{lecun2010convolutional}.
+Each feature map represents a particular feature at all locations over the image, such as vertical lines. 
+A CNN alternates between two types of layers, convolutional and sub-sampling, making up one stage\citep{chen2014big} .
+There will be several such stages followed by a set of fully connected neurons to form a classification module\citep{lecun2010convolutional}.
+
+
+A convolutional layer performs convolution operations with several filter maps of equal size.
+This is equivalent to parsing the image to several different filters each sensitive to different local features, known as the local receptive field, and sometimes the shift window\citep{lecun2010convolutional}\citep{mo2012survey}.
+To illustrate we consider an image, a 3D array with $n_1$ 2D feature maps of size $n_2 \times n_3$.
+The number of feature maps, $n_1$ is user defined.
+Each component within a feature map, denoted by $x_i$, is given by $x_{ijjk}$.
+The output is a 3D array, denoted by $y$, of $m_1$ feature maps of size $m_2 \times m_3$. 
+A trainable filter, or kernel, $k_{ij}$ in the filter bank of size given by $l_1 \times l_2$ connects input feature map $x_i$ to output feature map $y_j$.
+The convolution layer computes $y_j=\sigma(b_j+\sum_i k_{ij}*x_i)$ where * is the 2D discrete convolution operator, $b_j$ is a trainable bias term and $\sigma()$ a non-linear function \citep{lecun2010convolutional}\citep{mo2012survey}\citep{chen2014big} .
+As the convolution filter has the same weights over the entire image, shared weights, translating the input will translate the output but otherwise leave it unchanged, something it would be very hard to train a fully connected neural network to do.
+Functions for $\sigma()$ in traditional ConvNets were a point-wise $tanh()$ sigmoid function applied to each value (ijk).
+This is not unique and there has been much research is more sophisticated non-linearities.
+In wide us now is the rectified sigmoid $R_{abs}: abs(g_i.tanh(()))$ where $g_i$ is some other trainable parameter\citep{lecun2010convolutional}.
+Following the non-linear function there is often subtractive and divisive local contrast normalization N\citep{lecun2010convolutional}.
+Motivating this normalization is the increased local competition between adjacent features in a  feature map and between different feature maps at the same location\citep{lecun2010convolutional}.
+A subtraction normalization computes $v_{ijk}=x_{ijk} - \sum_{ipq} w_{pq}.x_{i,j+p,k+q}$ where $w_{pq}$ is the normalized truncated Gaussian weighting window, usually of size $9\times 9$. 
+Divisive normalization then computes: $v_{ijk}=\frac{v_{ijk}}{max(mean(\sigma_{jk}),\sigma_{jk})}$
+where $\sigma_{jk}=(\sum_{ipq}w_{pq}.v_{i,j+p,k+q}^2)^{1/2}$.
+
+
+In pooling, outputs of nearby featur detectors are combined into a local or global bag of features, in a manner that preserves relevant information whilst removing sensitivity to  noise, translations and distortions\citep{lecun1995convolutional}{bengio2009advances}.
+Pooling treat each feature map separately producing a more compact representation by averaging (or max-pooling) pixels within a small neighbourhood, reducing the data-rate to the layer above\citep{dengthree}\citep{lecun2010convolutional}
+\citep{bengio2009advances}
+The pooling layer can be understood as a grid of units spaced $s$ pixels apart.
+Each unit will summarize a grid from the convolutional layer below of size $z\times z$, centered at the center of the pooling unit, called the pooling window\citep{chen2014big} .
+The stride $s$ is usually equal to the window size, i.e not-overlapping, however is $s<z$ the pooling units will have overlapping Poolign Windows.
+Overlapping has been shown to be less likely to overfit\citep{bengio2009advances}\citep{krizhevsky2012imagenet}.
+\citep{bengio2009advances}
+
+A simple instance of the summary fucntion may be taking the maximum value,$max(f_i)$, where $f_i$ refers to all elements in the pooling window\citep{bengio2009advances}\citep{lecun2010convolutional}.
+Alternatively we can take the average, $average(f_i)$.
+Stochastic pooling\citep{bengio2009advances} is yet another example of a pololing function in an attempt to fix the issue with $max(f_i)$ and $average(f_i)$ being too strongly affected by the largest value in the pooling windoe.
+Each feature in the pooling window is given a probablity
+
+\be
+p_i=\frac{f_i}{\sum_{k\in R_j}a_k}
+\ee
+
+the pooling unit then returns
+
+\be
+a_j=f_l where l \sim P(p_1,....,p_{\vert R_j \vert})
+\ee
+Typically pooling windows are hand-designed, however algorithms exist which generate learnable pooling regions\citep{bengio2009advances}.
+
+The combination of a convolution layer followed by pooling is equivanlent to a conolution with a small size kernel followed by  a squashing fucntion.
+
+The net effect of weight sharing in the convolutional layer followed by a pooling scheme provides the CNN with natural translational invariance properties\citep{dengthree}.
+Then after passing through a non-linearity sub-sampling reduces the dimensionality of the data.
+In spacial pooling the outputs of nearby feature detectors are combined into a local bag of features such that is more difficult to over-fit\citep{goyal2014object}.
+Traditional ConvNets used to apply another non-linear activation function after the pooling layer, most recent models do not.
+Some even dispense with a polling layer entirely by striding the filter with steps greater than one to do filtering and pooling in one move.
+Yet other variants pool similar features at the same location in addition to the same feature at nearby locations\citep{goyal2014object}.
+
+CNN's have been found to be highly effective in image recognition tasks\citep{dengthree}.[lecun et all 1998, ciresane et all 2012, le et all 2012, dean et all 2012, krizhevshy et all 2012
+CNN's have also been found to be effective in speech recognition tasks [abdel hamid eta ll 2012, 2013;sainath et all 2013. deng et all 2013]
+
+Pooling Unit functions are commonly,
+Max Pooling  - The output is given by $max(f_i)$ where $f_i$ are all the features in the Pooling Window.
+Average Pooling - The output is given by the average of the $f_i$ in the pooling window.
+Stochastic Pooling - Max pooling and average pooling are overly influenced by the largest activation in the pooling window.
+In order to ensure other activations are e taken into account each feature in the Pooling window is assigned a probability
+\be 
+p_i - \frac{f_i}{\sum_{k\in R_J}a_k}
+\ee
+
+Pooling units are then outputs 
+
+\be
+a_j = f_l where l\approx P(p_1,...,p_{|R_j|}
+\ee
+Typically pooling windows are manually designed.
+Some research has investigated learn-able pooling region size.
+
+
+
+In the case of 2D data such as an image of  $N\times N$ - CNNs can deal with more dimensions - is the input.
+With only local receptive fields, neurons above the image extract visual features.
+Each convolutional layer has several feature maps constructed from convolving input with different feature filters, weight matrices.
+The value of each pixel in the feature map is the result of connecting a small defined region of the input below to a neuron.
+The weights used in this connection are the filter which will move over the whole image to generate different pixels in the above feature map.
+Several filters, or matrices of weights, being applied means that several secondary images, or feature maps will be generated.
+Expressed mathematically this is
+\be
+y_j^{(l)}=f (\sum_i K_{ij} \otimes x_i^{l-1)}+b_j)
+\ee
+
+where $Y_j^{(l)}$ is the j-th output for the l-th convolution layer, $C_l$ ; $f(\dot)$ is a non-linear function (often a scaled arctan) as the activation function.
+$K_{ij}$ is a trainable filter (or kernel) that convolves with feature map $x_i^{(l-1)}$ from the previous layer to produce a new feature map in the current layer.
+Symbol $\otimes$ is the discrete convolution operator and $b_j$ the bias term.
+
+Each filter $K_{ij}$ can connect to all or a portion of the feature maps from the previous layer.
+The sub-sampling layer reduces the spacial resolution of the feature map (providing some distortion invariance).
+Each pixel in the sub-sampling layer is often constructed using an average the activations of a $2\times2$ area in the feature map.
+
+The parameters which need to be trained are the weights $K_{ij}$ , which are usually trained by back-propagation techniques and gradient descent using a mean-squared error as the loss function.
+
+Inspired by biological processes CNNs learn hierarchical representations of the data using local receptive fields( the filter weight matrices are small),shared weights ( a filters weights are the same regardless of the local field) and sub-sampling (reducing map size).
+All filters can be trained through both supervised and unsupervised methods (uncovered here).
+Having learnt feature hierarchies prepares the CNN to have some degree of translational and distortional invariance.
+
+
+
+
+Back propogation training of CNNs.
+The error signal $\delta_k^{l-1}$ of a neuron $k$ in the previosu layer $l-1)$ has its weights adjusted depending on the error signals, $\delta_j^{(l)}$ of the nearons in the local field of the curent layer $l$.
+This backward propogation can be implemented in one of two ways know as pushing and pulling\citep{chen2014big} .
+
+Pulling takes neurons in the previous layer as it's object and pulls error signals from the layer above, the current layer.
+This is not incorrect, but is difficult to implement.
+Unlike the layer above, $(l)$, where every neuron is connected to the same number of neurons below the layer below $(l-1)$, the neurons in the lower layer connect to differing amounts of neurons in the layer above due to border effects.
+This forces you to first compile a list of neurons in the current layer $l$ that connect to neurons of the layer below making this rather inefficient.
+
+The alternative method, pushing, pushes the error signals of the current layer $l$, which are all connected eto the ssme number of neurons below.
+For each unit in the current layer we update the units in the previous layer.
+
+[demonstrate with 1D convolutiional layer]
+Since =all weights are learned via backpropogation CNNs can be understood as synthesizign their own feature generator\citep{lecun1995convolutional}.
+
+
+
+CNN Analysis
+We can investigate what obejcts the trained CNN cosiders similar by analysisn the activations in the final hidden layer\citep{krizhevsky2012imagenet}.
+The closer the activations are to each other in the activation space, the more simlar those two images must be.
+The euclidean distance between activation vectors is
+\be 
+d=\sqrt{\Delta a_1^2+\Delta a_2^2+ ...\Delta a_n^2}
+\ee
+
+where d is the Euclidean distance, $\Delta a_i$ the difference between the $i$'th activation's in the final hidden layer of two differnt images.
+This is computationally inefficeitn as there will likely be thousands of neurons in the hidden layer, making it scale as $O(N^2)$.
+This can be madde more efficient by training an autoencoder to compress these activation vectorsn to short binary codes [explain method used on text]\citep{krizhevsky2012imagenet}.
+Taking the binary code for an image's final hidden layer, one can find similar images by simply taking other images with the same code, or flip any bit to obtain similar photos.
+Flipping more bits will return more images, but that are less similar[cite document retrieval system]. 
+
+CNNs also have the advantage of easily being implemented in hardware. 
+Specialized chips can process forward propogation in large networks with extreme speed\citep{lecun1995convolutional}.
+
+TDNNs
+Fixed size CNNS that share weights along a single temporal dimesnion are called Time-Delay Neural Networks(TDNNs).
+These have been succesfulluy used in phoneme, spoekn word and on-line handwriting recongioton tasks\citep{lecun1995convolutional}.
+
+
+incorporating multiple DNNs seperately trained on teh smae input can become experts on the input processed in deifferent ways\citep{ciresan2012multi}.
+Preedictions of these networks may then be averaged to produce a smarter netwrok than any single CNN\citep{ciresan2012multi}.
+Such Multi-column DNNs further decrease the rror rate by some 30-40\%\citep{ciresan2012multi}.
+Individual DNNS of hundreds of maps per layer and about 6-10 layers can now be trained with the speed up in GPUs.
+This number of maps and layers is comparable to teh visual cortex and retina of macaque monkeys\citep{ciresan2012multi}.
+Column votes may be avergaed as
+
+\be
+y^i_{MCDNN}=\frac{1}{N} \sum^{\#columns}_{j} y^i_{DNN_j}
+\ee
+where i is the ith class and j runs over the number of DNNS.
+
+High data transfer and the associated latency prevent multi-threading CPU code from speading up teh learning process\citep{ciresan2012multi}.
+In recent years GPU's have come to solve the problem being solme two-orders of magnitude faster than the CPU counterpart\citep{ciresan2012multi}.
+
+Much like a DNN's intial weights can be used from a DBM, a CNN can have it's filters initialised with auto-encoders.
+This helps learn non-trivial features and discover good CNN initializatioons avoiding local minima whihc plague deep learning problems\citep{masci2011stacked}.
+This is simply generalized to CNNs where the k'th map is given by
+
+\be
+y=\sigma(x\star W^k +b^k)
+\ee
+
+where $\sigma$ is the activation function, $\star$ the convolution operation.
+The recontruction would then be obtained via
+
+\be
+y=\sigma(\sum_{k\epsilon H} h^k \star \hat{W}^k +c)
+\ee
+
+where c is the bias per input channel, H the group of feature maps, $\hat{W}$ the transposed matrix $W$.
+
+This can then be minimised with some cost function, say mean squared error, and minimized with gradient descent.
+Stacking several layers of such a Stacked Auto Encoder trained in a greddy layer wise fasion like DBNs.
+The weights after this process may be fine tuned with backpropogation with labelled examples, the top level activations used as features for another classifier or can be uszed to initialise a CNN with identical topology priot to it's supervised training stage\citep{masci2011stacked}.
+Such pretrained nets tend to beat randomnly initilaised nets slightly, but consistently\citep{masci2011stacked}.
+
+
+

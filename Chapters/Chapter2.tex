@@ -1,0 +1,881 @@
+% Chapter 2
+
+\chapter{Data Handling} % Main chapter title
+
+\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{Chapter 2. \emph{Data Handling}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+This chapter tackles issues facing data collection, handling, training implications and methods of enhancing performance.
+
+
+Data collection methods include creating your own, querying existing databases and performing data fusion, a term for cross-matching and data combining \citep{ball2010data}.
+Combining data from diffirent sources is also know as data enrichement.
+A common area where data fusion is used is the use of multi-wavelength data from astronomy.
+Data can be gathered from Astronomical surveys specializing in one or more regions in the electromagnetic spectrum.
+This is commonly done by matching the objects position in the sky to within some degree of accuracy and gathering different survey data on those co-ordinates.
+In bussiness, data enrichement can be done by purchasing socioeconomic data about individual customers 
+Such Automated data collection processes run the risk of introducing ambiguous matches, faulty data, large processing time and data storage issues among other difficulties.
+In collecting data it is important to account and be aware of biases that may be present in the data.
+Historical data may have been easy to collect or was collected for a specific purpose.
+This can mean the data is not representative of the problem you now study.
+The quality of the data itself may be suspect as there may have been little commitment to data assurance when the data was gathered.
+A common bias that comes into play can be seen when default values are included in a data capturing system.
+These default values tend to be substantially overrepresented by the data capturers.
+Other concerns about acquired data include a lack of precision, and simply being out of date.
+
+Often the data you have will not be best expressed as a means for classification or regression.
+In these cases, which is nearly all the time, it is desirable to create derived values. 
+For
+example, data may contain purchase price, costs, and sale price information. 
+This data can be complemented by calculating the corresponding profits from the information you already have.
+Such generation of tertiary features is now as feature construction.
+It is important ot be aware of numerical issues that arise when developing features.
+Anything from unit conversions to crafting features can cause errors where division by zero and loss of accuracy may occur.
+Examples of bad data within astronomy related datasets include magnitude values that are set to $-9999$, equal to $NaN$, flagged as incorrect, missing altogether or are correctly formatted but clearly non-physical.
+A common example from photometric surveys is where the recorded redshift of an object is beyond the instruments capability of detecting in the first place.
+There are many means to deal with such data, sometimes the entire object is scrapped, or bad values interpolated.
+Naturally the advisability of interpolation is problem dependant.
+There will also be known outliers to the data, where values are correct but are outside the range of analysis.
+These may be excluded outright or excluded depending on the severity of their extremity (such as how many standard distributions they are from the mean) or just down-weighted in importance.
+
+
+\section{Data Preprocessing}
+
+	\subsection{Normalization}
+
+Normalizing refers to the rescaling of features.
+For many algorithms, if there is a large discrepancy in the magnitude of features this can translate into the model overestimating the role of the larger magnitude feature.[cite andrew ng]
+Even in cases where the training algorithm is immune to such confusion, training is significantly sped up by the appropriate normalization of features.
+There may also be interaction of very large and very small numbers causing loss of accuracy
+Normalization examples include linear transformations such as scaling such that each feature has a range from 0 to 1, and scaling each feature to have a  mean of 0 and a standard deviation of 1.
+The latter method is known as standardization.
+
+What is commonly done is to transform the data to have zero mean, by centering\citep{barber2012bayesian}:
+A data set of $x^1, x^2, ... , X^N$ with dimension $D$ can be transformed to data $y^1, y^2, ... , y^N$ which has zero mean with
+\be
+y^n = x^n-m
+ \ee
+where $m$ is the mean of the data given by 
+
+ \be
+m=\frac{1}{N} \sum^N_{n=1} x^n
+\ee
+
+
+
+
+	\subsection{Whitening}
+
+A more advanced process of data normalizing in which data is not only scaled to a similar range but correlations between features are removed.
+This is achieved by transforming their covariance matrix to the identity matrix.
+The transformation can be thought of as just a linear change in coordinates.
+What results is data with zero mean and unit covariance.
+\be
+X^n = S^{-\frac{1}{2}}(X^n-m)
+\ee
+where $S$ is the covariance matrix of the data
+\be
+S= \frac{1}{N} \sum^N_{n=1} (x^n-m)(x^n-m)^T
+\ee
+
+        \subsection{Category Transformations}
+
+The way in which the data is encoded can have a huge effect on the performance of the model.
+Therefore it is important to consider the different ways of representing data\citep{barber2012bayesian}.
+
+Categorical data is where the label $y$ is one of a discrete number of classes that has no inbuilt ordering.
+An example is a feature that is the animal species in the data; dog, cat and mouse.
+A very common way of expressing these categories numerically is to use 1-of-m encoding or scalarization.
+Here we use a vector with the same number of elements as categories.
+All elements will be zero except the i'th one corresponding to the i'th class which will be one.
+For example the classes `cat', `dog' and `mouse' can be labelled but eh vectors [1,0,0],[0,1,0] and [0,0,1] respectively.
+
+A problem would arise if the categories were labelled instead as 1,2 and 3.
+If the model was confused if the animal is a dog or mouse it may output a value in between, 2, suggesting that it thinks it is looking at a cat even though that is not the case.
+Handled by the vector scheme also allows the model to output how certain it is on any object classification.
+For example an output of [0.2,0.9,0.1] would suggest a strong classification as a cat but weak classification as a dog or mouse.
+
+Ordinal data is categorical data which has inbuilt rankings such as A-grade, B-grade and C-grade apples.
+Here one can use 0 for A-grade, 1 for B-grade and 3 for C-grade Apples, so movement along the number line corresponds with the ordering of the classes.
+
+Numerical data is perhaps the most easy to work with.
+This data takes on real numbers as values, e.g. housing prices, population sizes and temperatures.
+If necessary numerical data can be made categorical by many transformations.
+One example being binning, where the bins may be user-specified or optimally generated.
+Either way issues may be encountered where two identical floating point numbers are not considered so, or numbers sit on bin edges, there are empty bins and values that cannot be binned such as NaN(Not a Number).
+
+
+%To determine the response normalized activity $b^i_{x,y}$ we use the activity of a neuron, $a^i_{x,y}$ computed by applyiong kernel $i$ at position $(x,y)$ and applying the ReLU non-linearity in the expression\citep{krizhevsky2012imagenet}.
+%
+%\be
+%b^i_{x,y}=a^i_{x,y} (k+\alpha \sum^{min(N-1,i+n/2)}_{j=max(0,i-n/2)}(a^j_{x,y})^2)^\beta
+%\ee
+%The sum runs over $n$ adjacent kernel maps at the same spacial position, where $N$ is the number of kernels in the layer.
+%Ordering of the maps is arbritrary and determined prior to training.
+%This Normnalization ecourages lateral inhibition, inpired byt eh action of real neurons, creating competition for large activity among neuron outputs computed with different kernels\citep{krizhevsky2012imagenet}..
+%Constants $k$,$n$,$\alpha$ and $\beta$ are hyper-parameters[define this] with their values determined using a validation set.
+%This approach is similar to locntrast normalization of [Jarett et al], but this is more aptly thought of as brightness normalization as the mean activity is not subtractes as in the case of local contrast normalization\citep{krizhevsky2012imagenet}.
+
+
+	\section{Curse of Dimensionality}
+The Curse of Dimensionality - a phrase coined by Bellman in 1961 - refers to the issues faced by many learning algorithms when the feature sets have many dimensions\citep{domingos2012few}.
+Naively one would think designing more features could only increase the classifier's effectiveness, however their potential benefit may be outweighed by the curse of dimensionality. 
+In general, our intuitions formed in a 3D world do not follow into higher dimensions.
+Generalizing becomes harder for a machine learning algorithm to perform for larger feature dimensions for several reasons.
+The first issue is that for a set number of examples, as the feature dimension increases, the training set covers a dwindling fraction of the total feature space.
+The sample size must increase exponentially with dimension in order to yield the same density\citep{cherkassky2007learning}.
+If there are $n$ samples within $R^1$ to be considered dense, it will take $n^d$ data points to achieve the same density when in $d$ dimensions.
+Consider a feature space of 100 dimensions, with 1 trillion training examples; while there may be many examples they actually only cover approximately $10^{-18}$ of the input space.
+High dimensional learning problems are more difficult because the low data density requires stronger, more accurate constraints on the problem solution\citep{cherkassky2007learning}.
+
+Secondly not only is the feature space more sparsely covered but algorithms sensitive to similarity between points (as a measure of distance between points in the feature space) break down in higher dimensions.
+Consider a nearest neighbour classifier - that is a classifier that determines the class of an input feature vector by comparing to its closest neighbours - in high dimensions.
+If the class is really just dependant on two features $x_1$ and $x_2$, then the nearest neighbour classifier would have a simple time.
+However, if we add 98 irrelevant features, the noise(regardless of what type) from them swamps the true signal from the $x_1$ and $x_2$ features, and so the nearest neighbour classifier effectively makes random decisions.
+Even more surprising is that even if all 100 features in the previous example were relevant, a nearest neighbour algorithm still has a problem.
+The counter-intuitive result comes from the fact that in high dimensional spaces all examples can look alike.
+This issue can be explained by considering what happens in the idealized case when examples are laid out on a regular grid.
+For a test example $x_t$ in $d$ dimensions, $x_t$'s $2d$ nearest neighbours will lie the same distance from it.
+In one dimension, the two nearest neighbours will lie on either side and the same distance form $x_t$.
+In two dimensions, the 4 nearest neighbours lie at the four corners of a square surrounding $x_t$.
+Stepping up the number of dimensions we see more and more examples can become nearest neighbours of $x_t$ until the choice of nearest neighbours is close to random giving meaningless results for the class of $x_t$.
+
+
+Objects in higher dimensional spaces have a larger amount of surface area for a given volume than objects in low dimensional spaces.
+For example most of the volume of a multivariate Gaussian distribution comes not from near the mean (where the values are large) but much further out where the tails of the distribution are small but sweep into a much larger volume than near the core.
+Put in another way, most of the volume of a higher dimensional orange comes not from the pulp but the thin sliver of skin far from the center.
+In order to enclose even a small fraction of the data a large radius is required.
+The formula below gives the edge length of a hypercube required to contain a fraction of the samples.
+\be
+e_d(p) = p^{1/d}
+\ee
+where $p$ is the specified faction of the samples, and $d$ the dimension.
+The third issue is that enclose just 10 percent of the total data the edge length is $e_{10}(0.1)=0.8$.
+Very large neighbourhoods are required to capture even a small amount the of the data making it difficult to provide a local estimate for high dimensional data.
+
+Most data points are outliers in their own projection.
+This can be illustrated by the idea of standing at the end of a porcupine quill.
+Every other quill will appear far away and clumped near the center.
+illustrate the difficulty in prediction of the label at a given point as any point will on average be closer to the edge than the training data point and so require extrapolation, not even interpolation.
+
+Finally, most data points are more closely situated to a edge than to any other data point,
+For a scenario in which $n$ data points are uniformly distributed in a $d$ dimensional ball of unit radius, the mean distance between the origin and the closest data point is 
+\be
+D(d,n) = \left(1-\frac{1^{1/n}}{2}\right)^{1/d}
+\ee
+In a $200$ dimensional space with 200 data points this translates to a median distance of $D(10,200)\approx0.57$.
+The nearest point to the origin is over half the way from the origin to the radius, which is closer to the boundary of the data.
+
+There is an effect which partly counteracts the curse of dimensionality.
+In general most examples do not span throughout the features space uniformly but are concentrated in a lower dimensional manifold.
+Auto-encoders, Principal Component Analysis (to be elaborated on later) and other machine learning gear exploit this fact.
+For example k-nearest-neighbours works well for handwritten digit recognition even though the images makes a features space of one dimension per pixel. 
+For a $28\times28$ image that equates to a feature space of 784 dimensions, however the digits will only live in a much smaller sub-space of the full feature space allowing such neighbouring algorithms to still be successful.
+
+\section{Data Reduction}
+
+[doing so include 7Principal Components Analysis and
+7Kernel Methods.
+Another approach to reducing dimensionality is
+to select only a subset of the available features (see
+7Feature Selection).]
+
+
+
+[Instead of the term features one
+can use interchangeably the term dimensions, because
+an object with n features can also be represented as
+a multidimensional point in an n-dimensional space.
+Therefore, dimensionality reduction refers to the pro-
+cess of mapping an n-dimensional point, into a lower
+k-dimensionalspace.
+Tisoperationreducesthesizefor
+representing and storing an object or a dataset gener-
+ally; hence, dimensionality reduction can be seen as a
+methodfordatacompression.
+Additionally,thisprocess
+promotes data visualization, particularly when objects
+aremappedontotwoorthreedimensions.
+Finally,inthe
+context of classifcation, dimensionality reduction can
+be a useful tool for the following: (a) making tractable
+classifcationschemesthataresuper-linear withrespect
+to dimensionality, (b) reducing the variance of classi-
+fersthatareplaguedbylargevarianceinhigherdimen-
+sionalities, and (c) removing the noise that may be
+present, thus boosting classifcation accuracy.]
+
+
+[Tere are many techniques for dimensionality reduc-
+tion. Te objective of dimensionality reduction tech-
+niques is to appropriately select the k dimensions (and
+also the number k) that would retain the important
+characteristicsoftheoriginalobject.
+Forexample,when
+performing dimensionality reduction on an image,
+usingawavelettechnique,thenthedesirableoutcomeis
+for the diference between the original and fnal images
+to be almost imperceptible.
+When performing dimensionality reduction not on
+a single object, but on a dataset, an additional require-
+ment is for the method to preserve the relationship
+Dimensionality Reduction D 
+D
+between the objects in the original space. Tis is partic-
+ularlyimportantforreasonsofclassifcationandvisual-
+ization in the new space.
+Tere exist two important categories of dimension-
+ality reduction techniques:
+● Feature selection techniques, where only the most
+important or descriptive features/dimensions are
+retained and the remaining are discarded. 
+More
+details on such techniques can be found under the
+entry 7Feature Selection.
+● Feature projection methodologies, which project the
+existing features onto diferent dimensions or axes.
+Te aim here is again, to fnd these new data axes
+that retain the dataset structure and its variance as
+closely as possible.]
+
+
+[In general, dimensionality reduction is a commonly
+practicedandusefuloperationindatabaseandmachine
+learning systems because it generally ofers the follow-
+ing desirable properties:
+● Data compression: the dataset objects are repre-
+sented in fewer dimensions, hence saving important
+disk storage space and ofering faster loading of the
+compressed data from the disk.
+● Better data visualization: the relationships between
+the original high-dimensional objects can be visual-
+ized in two- or three-dimensional projections.
+● Improved classifcation accuracy: this can be attri-
+buted to both variance reduction and noise removal
+from the original high-dimensional dataset.
+ D Dimensionality Reduction
+c b a
+Original data on 3D PCA mapping on 2D ISOMAP mapping on 2D
+Dimensionality Reduction. Figure . Nonlinear dimensionality reduction techniques produce a better
+low-dimensional data mapping, when the original data lie on a high-dimensional manifold
+0 20 40 60 80 100
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1
+Number of dimensions
+Probability of finding neighbor within range w
+w=0.99
+w=0.97
+w=0.9
+Dimensionality Reduction. Figure . Probability P w (d)
+against dimensionality d. The data becomes sparse in
+higher dimensions
+● More efcient data retrieval: dimensionality reduc-
+tion techniques can also assist in making faster
+and more efcient the retrieval of the original
+uncompressed data, by ofering very fast pre-
+fltering with the help of the compressed data rep-
+resentation.
+● Boosting index performance: more efective use of
+indexing structures can be achieved by utilizing the
+compressed data, since indexing techniques only
+work efciently with lower-dimensional data (e.g.,
+from  to  dimensions, depending on the type of
+the index).]
+
+
+[Every data object in a computer is represented and
+stored as a set of features, for example, color, price,
+dimensions, and so on. Instead of the term features one
+can use interchangeably the term dimensions, because
+an object with n features can also be represented as
+a multidimensional point in an n-dimensional space.
+Terefore, dimensionality reduction refers to the pro-
+cess of mapping an n-dimensional point, into a lower
+k-dimensionalspace.Tisoperationreducesthesizefor
+representing and storing an object or a dataset gener-
+ally; hence, dimensionality reduction can be seen as a
+methodfordatacompression.
+Additionally,thisprocess
+promotes data visualization, particularly when objects
+aremappedontotwoorthreedimensions.
+Finally,inthe
+context of classifcation, dimensionality reduction can
+be a useful tool for the following: (a) making tractable
+classifcationschemesthataresuper-linear withrespect
+to dimensionality, (b) reducing the variance of classi-
+fersthatareplaguedbylargevarianceinhigherdimen-
+sionalities, and (c) removing the noise that may be
+present, thus boosting classifcation accuracy.]
+
+	\subsection{Feature Extraction and Selection}
+
+
+[Feature selection is the study of algorithms for reducing
+dimensionality of data to improve machine learning
+performance. 
+For a dataset with N features and M
+dimensions (or features, attributes), feature selection
+aims to reduce M to M ′ and M ′ ≤ M. 
+It is an important
+and widely used approach to 7dimensionality reduc-
+tion. Another efective approach is 7feature extraction.
+One of the key distinctions of the two approaches lies
+at their outcomes. 
+Assuming we have four features
+F  ,F  ,F  ,F  , if both approaches result in  features,
+the  selected features are a subset of  original fea-
+tures (say, F  ,F  ), but the  extracted features are some
+combination of  original features (e.g., F ′
+
+= ∑a i F i
+and F ′
+
+= ∑b i F i , where a i ,b i are some constants). 
+Fea-
+ture selection is commonly used in applications where
+original features need to be retained. Some examples
+are document categorization, medical diagnosis and
+prognosis, gene-expression profling. 
+We focus our dis-
+cussion on feature selection. 
+Te benefts of feature
+selection are multifold: it helps improve machine learn-
+ing in terms of predictive accuracy, comprehensibility,
+learning efciency, compact models, and efective data
+collection.
+Te objective of feature selection is to remove irrel-
+evant and/or redundant features and retain only rele-
+vant features. 
+Irrelevant features can be removed with-
+out afecting learning performance. 
+Redundant fea-
+tures are a type of irrelevant features. Te distinction
+is that a redundant feature implies the copresence of
+another feature; individually, each feature is relevant,
+but the removal of either one will not afect learning
+performance.
+Motivation and Background
+Te rapid advance of computer technology and the
+ubiquitous use of Internet have provided unparalleled
+opportunities for humans to expand the capabilities in
+production,services,communications,andresearch.
+In
+this process, immense quantities of high-dimensional
+data are accumulated, challenging the state-of-the-art
+machinelearningtechniquestoefcientlyproduceuse-
+ful results. Machine learning can beneft from using
+only relevant data in terms of learning performance
+(e.g., better predictive accuracy and shortened training
+time) and learning results such as improved compre-
+hensibility to gain insights and to facilitate validation.
+At frst glimpse, one might think a powerful machine
+learningalgorithmcanautomaticallyidentifytheuseful
+features in its model building process. 
+In efect, remov-
+ing irrelevant and/or redundant features can afect
+machine learning. First, let us look at what constitutes
+efective learning. In essence, the 7hypothesis space is
+largely constrained by the number of features. Learning
+can be viewed as searching for a “correct” hypothesis
+in the hypothesis space. A hypothesis is correct if it is
+consistent with the training data or the majority of it
+in the presence of noise, and is expected to perform
+equally well for the unseen data (or instances that are
+not present in the training data). 
+In some sense, the
+more instances we have in the training data, the more
+constraints there are in helping guide the search for a
+correct hypothesis.
+Broadly speaking, two factors matter most for efec-
+tive learning: () the number of features (M), and
+() the number of instances (N). For a fxed M, a larger
+N means more constraints and the resulting correct
+hypothesisisexpectedtobemorereliable.
+ForafxedN,
+adecreasedM istantamounttoasignifcantlyincreased
+number of instances. Consider the following thought
+experiment for a binary domain of a binary classifca-
+tion problem: F  ,F  ,F  ,F  are binary and class C is also
+binary (e.g., positive or negative). If the training data
+consists of  instances (N = ), it is only a quarter
+of the total number of possible instances (  = ).
+Te size of the hypothesis space is  
+
+= ,. If
+only two features are relevant, the size of the hypothesis
+Feature Selection F 
+F
+space becomes  
+
+= , an exponential reduction of
+thehypothesisspace.
+Now,theonlyavailableinstances
+mightsufceforperfectlearningifthereisnoduplicate
+instance in the reduced training data with two features.
+And a resulting model of  features can also be more
+complexthanthatoffeatures.
+Hence,featureselection
+can efectively reduce the hypothesis space, or virtu-
+ally increase the number of training instances, and help
+create a compact model.
+An unnecessarily complex model subjects itself to
+oversearching an excessively large hypothesis space. 
+Its
+consequence is that the learned hypothesis overfts the
+training data and is expected to perform poorly when
+applyingthelearnedmodeltotheunseendata.
+Another
+way of describing the relationship between N and M in
+the context of learning is the so-called curse of dimen-
+sionality, the need for the exponential increase in data
+size associated with linearly adding additional dimen-
+sions to a multidimensional space; or the concept of
+proximity becomes blurry in a high-dimensional space,
+resulting in degrading learning performance. 
+Teoreti-
+cally, the reduction of dimensionality can eventuate the
+exponential shrinkage of hypothesis space.
+Structure of the Learning System
+Te structure of a feature selection system consists of
+four basic components: input, search, evaluation, and
+output. 
+Te output of any feature selection system can
+be either a ranked list of features or a subset of features.
+For the former, one can select top k highly ranked fea-
+turesdependingontheneed.
+Inthecontextoflearning,
+the input to a feature selection system is the data which
+can be () supervised – all instances are associated with
+classlabelsasinsupervisedlearning;()unsupervised–
+noclasslabelsareavailableasinunsupervisedlearning;
+and () some instances have class labels and the rest do
+notas insemi-supervised learning.To rankthe features
+orselectafeaturesubsetcanbephrasedasasearchprob-
+leminwhichvarioussearchstrategiescanbeemployed.
+Dependingonhowafeatureselectionsystemisworking
+together with a learning system, we can study diferent
+models of feature selection (Kohavi \& John, ) such
+as wrapper, flter, or embedded. An inevitable question
+about feature selection is whether the removal of fea-
+tures can help machine learning. Tis necessitates the
+evaluation of feature selection. We will review these
+aspects of feature selection research next.
+Categories of Feature Selection
+Feature selection algorithms can be categorized into
+supervised,unsupervised,andsemi-supervised,corres-
+pondingtodiferenttypesoflearningalgorithms.Tere
+has been a substantial gamut of research on supervised
+featureselection.
+Asinsupervisedmachinelearning,the
+data available for feature selection contains class labels.
+Te class information is used as a dominant factor in
+determining the feature quality. For example, we can
+simply measure the correlation between a feature (or a
+subsetoffeatures)andtheclassandselectthosefeatures
+withhighestcorrelations.Anotherwayofusingtheclass
+information is to see if a feature can help diferentiate
+two neighboring instances with diferent classes: obvi-
+ously, a relevant feature can, but an irrelevant feature
+cannot.
+Unsupervised feature selection has gained much
+attention in the recent years. 
+Most data collected are
+without class labels since labeling data can incur huge
+costs. Te basic principle of unsupervised learning is
+to cluster data such that similar objects (instances)
+are grouped together and dissimilar objects are sep-
+arated. In other words, if we had all similar objects
+in their corresponding designated clusters, we would
+have the minimum intracluster distances and the max-
+imum intercluster distances among all objects. For data
+ofhigh-dimensionality,distancecalculationcanbeabig
+problem due to the 7curse of dimensionality. 
+One idea
+istofndfeaturesthatcanpromotethedataseparability.
+InDyandBrodley(),thegoalofunsupervisedfea-
+ture selection is defned as fnding the smallest feature
+subset that best uncovers “interesting natural” clusters
+fromdataaccordingtothechosencriterion.
+Avariantof
+unsupervised feature selection is subspace clustering. It
+explores the fact that in a high-dimensional space, clus-
+ters can ofen be found in various subspaces of very low
+dimensionality. 
+Some subspace clustering algorithms
+are reviewed in Parson, Haque, and Liu ().
+Unsupervised feature selection is a more loosely
+constrained problem than supervised feature selec-
+tion. 
+When a large number of labeled instances are
+infeasible to obtain, could we use a small number
+of labeled instances? Semi-supervised feature selection
+attempts to take advantage of both the size of unla-
+beleddataandthelabelinginformationofasmallnum-
+ber of labeled instances. 
+In the same spirit of 7semi-
+supervised learning, semi-supervised feature selection
+takes advantage of the two biases inherited in labeled
+ F Feature Selection
+and unlabeled data, respectively, in the hope that the
+problemoffeatureselectionbecomesmoreconstrained.
+Te basic idea is to fnd features that can not only help
+groupthedata,butalsoencouragetofnd,amongmany
+equallygoodgroups,thosegroupsinwhichinstancesof
+diferent classes are not in the same group (Zhao \& Liu,
+b).
+Searching for Relevant Features
+Te search for relevant features can be realized in two
+ways: () feature ranking – features are ranked accord-
+ing to the intrinsic properties of the data so that top
+k features can be chosen according to the need or a
+giventhreshold;and()subsetselection–asubsetoffea-
+ture is selected from the full set of features, and there
+is no relevant diference between the features in the
+selected subset. Subset selection can be carried out in
+variousways:forwardselection–startingwithanempty
+feature subset and adding more iteratively, backward
+elimination – beginning with a full set of features and
+eliminating some gradually, and random – the starting
+subsetcanbeanynumberwhichisthenadjusted:ifthis
+number of features sufces according to some quality
+measure, it may be decreased, otherwise it should be
+increased. Te exhaustive search is usually too expen-
+sive for either forward or backward search. Hence, a
+sequential search strategy is ofen adopted. 
+Sequential
+forwardsearch(SFS)selectsonefeatureatatime;oncea
+featureisselected,itwillalwaysbeintheselectedfeature
+subset and also helps determine which feature should
+be selected next within the already selected features.
+Sequential backward search eliminates one feature at
+a time; once it is ruled out, it will never be consid-
+ered for selection or inclusion in the selected set of
+features.
+Here we briefy illustrate two efective and ef-
+cient algorithms with disparate ideas. 
+One is ReliefF
+(Robnik-Sikonja \& Kononenko, ). 
+It selects a
+feature by checking how efectively it can diferenti-
+ate the neighboring data points with diferent classes.
+A feature’s weight is increased if it is efective in doing
+so. 
+Te features are then ranked according to their
+weights, and the top ranked features are deemed rel-
+evant. 
+Te second is FCBF (Yu \& Liu, ), which
+adds the feature-feature correlation into the selection
+process with feature-class correlations. 
+Te basic idea
+is that for two features and the class, we can consider
+notonlyeachfeature’scorrelationwiththeclass,butalso
+the correlation between the two features. 
+If the feature-
+feature correlation is greater than the smaller of the
+two feature-class correlations, the feature with smaller
+feature-class correlation is redundant and can thus be
+removed.
+Models of Feature Selection
+Treeclassicmodelsoffeatureselectionareflter,wrap-
+per, and embedded. 
+Research shows that, generally
+speaking, even for a classifer with embedded feature
+selection capability, it can beneft from feature selection
+in terms of learning performance. 
+A flter model relies
+onmeasuresabouttheintrinsicdataproperties.Mutual
+information and data consistency are two examples
+of measures about data properties. A wrapper model
+involvesalearningalgorithm(e.g.,aclassifer,oraclus-
+tering algorithm) in determining the feature quality.
+For instance, if removing a feature does not afect the
+classifer’s accuracy, the feature can be removed. 
+Obvi-
+ously,thiswayfeatureselectionisadaptedtoimproving
+a particular classifcation algorithm. 
+To determine if
+the feature should be selected or removed, it needs to
+build a classifer every time when a feature is consid-
+ered. 
+Hence, the wrapper model can be quite costly.
+An embedded model embeds feature selection in the
+learning of a classifer. 
+A best example can be found
+in decision tree induction in which, at each branching
+point, a feature has to be selected frst. When feature
+selection is performed for data preprocessing, flter and
+wrapper models are ofen employed. When the pur-
+pose of feature selection goes beyond improving learn-
+ingperformance(e.g.,classifcationaccuracy),themost
+applied is the flter model.
+Evaluation of Feature Selection
+Te efcacy of feature selection can be validated via
+empirical evaluation. 
+Two natural questions related to
+classifcationlearningare()whetherusingselectedfea-
+tures can do as well as using the full set of features, and
+() how to compare two feature selection algorithms
+when one wants to fgure out which is more efective.
+Te frst question can be considered as a special form
+of the second one if we assume the full set of features
+is selected by a dummy feature selection algorithm that
+simply selects all given features. 
+We therefore address
+Feature Selection F 
+F
+only the second question here. 
+When we need to com-
+pare two feature selection algorithms (A  ,A  ), if the
+relevant features are known (the ground truth) as in
+the experiments using synthetic data, we can directly
+compare the selected features by A  and A  , respec-
+tively, and check which result is closer to the ground
+truth. In practice, one seldom knows what the relevant
+featuresare.
+Aconventionalwayofevaluatingtwoalgo-
+rithms is to evaluate the efect of selected features on
+classifcation accuracy. 
+It is a two-step procedure: frst,
+selecting features from data D to form D ′ i with reduced
+dimensionality; and second, obtaining estimated pre-
+dictiveaccuracyofaclassiferonDandD ′ i ,respectively.
+Which algorithm is superior can be statistically mea-
+suredbyaccuracydiferencebetweenA  andA  .
+Ifthere
+isnosignifcantdiference,onecannottellwhichoneof
+thetwofeatureselectionalgorithmsisbetter;otherwise,
+the algorithm resulting in better predictive accuracy is
+better.
+Another issue arising from feature selection eval-
+uation is about feature selection bias. 
+Using the same
+training data in both feature selection and classifca-
+tionlearningcanresultinthisselectionbias.
+According
+to statistical theory based on regression research, this
+biascanexacerbatedataoverfttingandnegativelyafect
+classifcation performance. 
+A recommended practice is
+to use separate data for feature selection and for learn-
+ing.Inreality,however,separatedatasetsarerarelyused
+in the selection and learning steps. 
+Tis is because we
+ofenwanttouseasmuchdataaspossibleinbothselec-
+tionandlearning.
+Itisagainstthisintuitiontodividethe
+training data into two datasets leading to the reduced
+dataineithertask.TeworkpresentedinSinghiandLiu
+() convincingly demonstrates that in regression,
+feature selection bias caused by using the same data
+forfeatureselectionandclassifcationlearningdoesnot
+negatively impact classifcation as expected.
+Feature Selection Development and Applications
+Te advancement of feature selection research enables
+ustotacklenewchallenges.
+Featureinteractionpresents
+a challenge to feature selection. 
+If we defne relevance
+usingcorrelation,afeaturebyitselfmighthavelittlecor-
+relationwiththetargetconceptasinclassifcationlearn-
+ing,butcanbeveryrelevantifitiscombinedwithsome
+otherfeatures,becausethesubsetcanbestronglycorre-
+latedwiththetargetconcept.
+Teunintentionalremoval
+of these features can eventuate poor learning perfor-
+mance. It is, in general, computationally intractable to
+handlefeatureinteraction.
+InZhaoandLiu(a),itis
+shown that it is feasible to identify interacting features,
+in the case of using data consistency as a feature quality
+measure,bydesigningaspecialdatastructureforlinear-
+time backward elimination in terms of M features and
+by employing an information-theoretic feature ranking
+heuristic. 
+Te authors also point out that the key chal-
+lenge of employing the ranking heuristic is the feature
+order problem – a lowly ranked feature is more likely to
+be eliminated frst.
+Data fusion of multiple data sources presents
+another challenge for feature selection. 
+Multiple data
+sources, each with its own features, need to be inte-
+grated in order to perform an inference task with the
+same objective optimally. 
+Instead of selecting the most
+relevant features from each data source, one now needs
+to consider selecting complementary features. 
+It is also
+very likely that performing conventional feature selec-
+tion on the single aggregated dataset by combining all
+the data sources cannot accomplish the task. 
+Te prob-
+lemofcomplementaryfeatureselectionseemsrelatedto
+thatoffndinginteractingfeatures.
+Itwillbeworthwhile
+toexaminehowbothresearchefortscanbootstrapeach
+other in attacking the two recent challenges.
+Te recent developments in feature selection wit-
+ness many new eforts on studying causal relation-
+shipsamongfeatures(Guyon,Aliferis,\&Elisseef,)
+to distinguish actual features and experimental arti-
+facts; on text feature selection (Forman, ) that were
+widely employed in thwarting spam emails, automatic
+sorting of news articles, Web content management,
+and customer support; on small data sample problems
+that present challenges to reliable estimation of fea-
+ture quality and detection of feature interactions, and
+on connecting feature selection and feature extraction.
+Both feature selection and extraction aim to reduce the
+dimensionality of the data by removing the nonessen-
+tial (redundant or noisy) information, but the two
+areas have been researched largely independently. 
+Tey
+can, however, indeed complement each other. On the
+one hand, feature extraction approaches, such as lin-
+ear discriminant analysis, are efective for reducing
+data dimensionality, but sufer from the high computa-
+tionalcomplexity,especiallyforhigh-dimensionaldata;
+on the other hand, feature selection algorithms can
+ F Feature Selection in Text Mining
+handle large-scale data and also lead to easy interpre-
+tation of the resulting learning model, but they may
+not select interacting features. 
+Te challenges of high-
+dimensional data suggest a need for the two to work
+together.
+Tere is little work in the literature discussing about
+selecting structural features and sequential features.
+When data evolve, the variety of data types increases.
+Semi-structuralorstructuraldatanowbecomeincreas-
+ingly common. 
+Consequently, some features in these
+data may contain a structure (e.g., a hierarchy that
+defnes the relationships between some atomic fea-
+tures). 
+It can be commonly seen in the data with meta
+data.
+Clearly,extantfeatureselectionalgorithmshaveto
+evolve in order to handle structural feature selection.
+Another area that requires more research attention is
+the study of sequential features for data streams and
+for 7time series. 
+Tey are very diferent from the types
+of data that are well studied. Data streams are massive,
+transient, and ofen from multiple sources. 
+Time series
+data present their continuous temporal patterns.
+Feature selection research has found its applica-
+tion in many felds where the presence of large (either
+row-wise or column-wise) volumes of data presents
+challenges to efective data analysis and processing.
+High-throughput technologies allow for parallel mea-
+surements of massive biological variables describing
+biological processes. 
+Te inordinate number of the bio-
+logical measurements can contain noise, irrelevance,
+andredundancy.
+Featureselectioncanhelpfocusonrel-
+evant biological variables in genomics and proteomics
+research. 
+Te pervasive use of Internet and Web tech-
+nologies has been bringing about a great number of
+new services and applications, ranging from recent
+Web . applications to traditional Web services where
+multimedia data are ubiquitous and abundant. Fea-
+ture selection is widely applied to fnd topical terms,
+establish group profles, assist categorization, simplify
+descriptions, facilitate personalization and visualiza-
+tion, among others.]
+
+As we have seen, the curse of dimensionality gives reason to want fewer, more powerful, features.
+Machine learning algorithms will require some form of dimension reduction using methods that retain as much information as possible in as few features as possible.
+In particular, redundant features will play havoc with some algorithms.
+
+Most basically one manner to reduce feature sets is to do so manually, using ones judgment as to which contain the least information and can be excluded.
+Being quite subjective and very tedious there are other more powerful approaches.
+Principal Component Analysis (PCA)  returns the eigenvectors of the input data.
+This is a linear coordinate transform, i.e. rotation in the feature space, where the directions that have the greatest information (greatest spread of data) can be selected and throw away features of the new coordinates that contribute little.
+
+Another method is that of forward selection.
+Here one starts with one attribute, the algorithm then selectively adds new features that gain the most information.
+Alternatively forward selection can be done in reverse in a process called backward elimination; start with all the attributes and selectively remove the least useful.
+
+Other dimension reduction methods use Machine learning algorithms themselves.
+Neural Networks can perform what can be considered as non-linear PCA when set up as an auto-encoder (to be explained in a  later chapter).
+Genetic algorithms can be employed to select the most successful feature set by creating `individuals', in a larger population, who are subsets of the feature set.
+The most successful individuals at the problem are allowed to `breed' more, mutating and altering successive generations in a way similar to evolution, allowing for the most fit subset to propagate and survive.
+Other methods include information bottleneck, which exploits information theory, Fisher Matric, Independent Component Analysis and wavelet transforms.
+[reference references from astronomy ML paper]
+
+Signal Processing TEchniques such as SIFT\citep{lowe2004distinctive} and HOG\citep{dalal2005histograms} are used to provide features features  for an image.
+They decompose an image into a set of descriptors.
+Then an unsupervised learning algorithm, often dicionary learning, builds a dictionary (bases of the descriptors) in order to encode the image as a feature vector, a the weights of the bases\citep{yang2015deep}.
+Common examples include bag-of-words using K-means\citep{sivic2003video}, fisher vectror using Gaussian Mixture Models\citep{perronnin2010improving} or other generative models.
+
+        \subsection{PCA}
+        
+        
+        \subsection{LDA}
+
+
+
+    \section{Data Augmentation}
+    
+    
+    
+    
+    
+Data Augmentation is the generation of new data with label -preserving transformations, from already existing data, in an effort to reduce overfitting, improve generality\citep{goyal2014object}\citep{krizhevsky2012imagenet}.
+Use elastic distortions to expand the the number of training examples\citep{mo2012survey}.
+In the case of images, common methods of augmentation include making new images that are translations, reflections, rotations,and skews versions of the original.
+In addtion altering the intensity and colour of illumination light should also not alter what object we are looking at\citep{chatfield2014return}.
+For example, learnign to classify dogs and ca ts, if it so happens many of the cats are facing toward the left the network may learn to only recognize those facing leftward and not `realise' the object is not dependant on which way it faces.
+Again with images is it often common practice to extract 5 images, situation dependant, 4 from the corners and one from the middle\citep{chatfield2014return}.
+Then applying horizontal reflections and other transfromations on the go to significantly increase the size and generality of the data.
+Generating alternate images on the fly with the tru image in memory is efficient and saves on data storage that would be used should all alternates be produced and saved beforehand\citep{goyal2014object}.
+
+Another form of data augmentation is in altering the RGB intensities in trained images.
+PCA  may be performed on the entire set of RGB values in the training set.
+Then to generate new images, multiples of the principle components are added to each training image\citep{krizhevsky2012imagenet} with magnitudes proportional to the correspand onding eigenvalues times a random variable drawn from a Gaussian of mean zero and variance 0.1.
+The result for the intensity, $I$, of a pixel at position $(x,y)$ is
+\be
+I'_{xy}=[I^R_{xy},I^G_{xy},I^G_{xy}] + [\vo{p_1},\vo{p_2},\vo{p_3}][\alpha_1\lambda_1,\alpha_2\lambda_2,\alpha_3\lambda_3]
+\ee
+where $I'$ is the new pixel intensity, $\vo{p_i} $  and $\lambda_i$ the $i$th eignevevtor and eigenvalue of the $3\times 3$ covariance of the RGB pixel values respectively.
+$\alpha_i$ is the Gaussian distribution generated variuable, each of wich is drawn only once for all the pixels of a single image until the image is used for training again until that training image is again useed for training where new $\alpha_i$ are drawn\citep{krizhevsky2012imagenet}.
+The method effectively vaptures the property of naturalimages that object identity is invariant to changes in intesity and colour of illumination\citep{krizhevsky2012imagenet}.
+
+Publically available Datasets often have bad labels, many objects in the image.
+Crowd Sourcing, as with Galaxy Zoo [cite], has been used to creat massive datasets\citep{goyal2014object}.
+
+This section details the handling of data input to machien learnign algorithms. 
+In particular the inotu toward DL algorithms.
+For images , a method known as Local Response Normalization (LRN)\citep{krizhevsky2012imagenet} contributes some lateral inhibition, similar to true neurons.
+This can be thought of as Brighness normalization, this is partiularly effective in images where the brightnress is liekly to vary, and you don't want the CNN to be sensitive to lighting conditions in classification tasks.
+
+Normalizing image data.
+Subtracting the mean and dividing byt the standard deviation
+
+
+		
+    
+    
+    
+    
+    
+    
+    

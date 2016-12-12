@@ -1,0 +1,120 @@
+% Chapter 1
+
+\chapter{Introduction} % Main chapter title
+
+\label{1_Introduction} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{\emph{Introduction}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+\begin{comment}
+The Introduction to the dissertation should set out the background to the research study and address the following areas:
+The context in which the research took place
+- What is the background, the context, in which the research took place?
+- Why is this subject or issue important
+- Who are the key participants and/or ‘actors’ in the area under investigation?
+- Are there important trends or pivotal variables of which the reader needs to be made aware?
+
+- A clear and succinct statement of the aims and objectives that the dissertation is going to address.
+- Have you presented a clear and unambiguous exposition of your research aim, the objectives you will address to meet this aim and your research questions?
+
+The reasons why this study was carried out
+- Was this study undertaken for example in order to test some aspect of professional or business practice or theory or framework of analysis?
+- Was the research carried out to fulfil the demands of a business organisation?
+
+
+This chapter may be between 500 to 750 words although in some subjects or topics the justification of the subject and scope may change the length of this chapter.
+
+
+Introduction – brief overview explaining the background and importance of the study
+
+3. Statement of Problem – specifically what the researcher wants to know; 
+
+4. Purpose of the Study – explanation of the problem and what the researcher hopes to achieve by conducting the study
+
+5. Theoretical framework, research questions, or objectives – used to guide the direction of the research;
+\end{comment}
+%Supernovae
+
+%CONTEXT - Astronomy
+Future astronomical surveys will generate far too much data for astronomers to tackle as they have traditionally done.
+It was the norm for astronomers to eyeball images of the sky, looking for interesting objects or transients.
+\textit{Transients} are objects that appear for a short amount of time.
+These include, but are not limited to, asteroids, gamma ray bursts, supernovae or objects unknown to science altogether.
+Telescopic cameras used in surveys have limited exposure to areas within the night sky,due to its vastness.
+When transients are discovered, follow ups with other telescopes necessary in order to accurately identify the object.
+Not all transients are created equal; some, like supernovae, are more valuable to science than others.
+Supernovae are rare gems for cosmologists which allow for learning about the history, curvature and content of the Universe.
+
+Telescope technology has improved so much transients are discovered at an overwhelming rate.
+Astronomers lack the resources to follow up on every one.
+
+The amount of data will be so large that the mere storage of it becomes a technological challenge, never mind computational use of it.
+In addition, there is increased interest in studies that use data from telescopes sensitive to different wavelengths.
+Such \textit{multi-wavelength} astronomy exacerbates the problem of handling and computing large amounts of data.
+To appreciate the extent of the problem, consider the upcoming Large Synoptic Survey Telescope (LSST) which will become scientifically active in 2022\citep{abell2009lsst}.
+Over its ten year lifespan it is estimated to discover over 10 billion galaxies.
+Each day around 30 TB of raw image data will be generated that will require processing and reduction\citep{kantor2005lsst}.
+
+The final archive will be around 60 PB, with the final object catalogue approximately 10-20 PB\citep{borne2007machine}.
+This challenge calls for a new approach to astronomy, one that is capable of dealing with Big Data.
+\textit{Big Data} is a broad term for data sets so large that traditional data processing methods are inadequate.
+This is a problem that is now facing many fields and industries.
+Maintaining the status quo will be impossible; other tools must be explored.
+%pivotal variable end opf moors law, serial becoming parallel
+
+
+%CONTEXT - Machine Learning
+As data challenges have been building, the computer science world has had a renewed interest in Machine Learning.
+\textit{Machine Learning} (ML) is the capacity of a computer program to `learn' from data.
+For example, many pictures of a person can be shown to an algorithm such that it learns how to identify him/her in another photo without the explicit instruction of a programmer.
+The reinvigorated interest in Machine Learning has largely been the result of an exponential growth in computing power.
+Newly discovered training methods are impractical to implement on older computers.
+Recently Machine Learning has shown great success in artificial intelligence and Big Data applications,  from the popularly used cellphone assistant Siri\citep{Siri} to driver-less Google cars\citep{waldrop2015no}.
+Convolutional Neural Networks (CNNs), a machine learning method loosely inspired by the brain, have achieved near-human level performance at image recognition in as little time as a third of a second\citep{taigman2014deepface}.
+This task, easy for us, has evaded the capability of computers and computer programmers for decades.
+CNNs are an example of \textit{Deep Learning} (DL) algorithms.
+They are `deep' in the sense that they use a many-layered architecture for learning.
+Deep Learning has had incredible success in other domains too, from voice recognition, brain-machine interfaces and medical diagnoses illustrating its promise for many applications.
+
+
+%PROBLEM STATEMENT
+%AIM and Research objectives
+While Machine Learning has had plenty of application in many arenas, it is still fairly new to astronomy.
+The aim of this study is to establish whether or not Machine Learning has a positive role to play for the future of astronomy.
+To answer this problem there are several research objectives to lead us to our aim.
+First we must come to understand Machine Learning fundamentals.
+In particular, we must learn what Deep Learning is and how to successfully apply it.
+Second, we will need to identify a problem we can use as test-case of DL's effectiveness in astronomy.
+For this we will apply DL to transient classification of the Sloan Digital Sky Survey (SDSS) from a few years ago, to observe the accuracy and efficiency achieved on a real-world astronomy dataset.
+As CNNs have proven successful at image-recognition, they are the ML method of choice for this application.
+This will act as a useful playground for exploring the role machine learning has for the future of astronomy.
+The final research objective is the evaluation of ML's future in astronomy.
+
+%Research Questions
+The primary interest is to ascertain the extent to which ML is effective. 
+To be a viable solution, machine learning must be both accurate and efficient.
+Classification accuracy needs to be competitive with trained astronomers.
+
+As supernovae are quite rare, about once in a hundred years per galaxy, ML must also be very stringent as to what constitutes a supernova.
+If not, then the pool of objects classified as supernovae will be contaminated with countless false-positives and imaging artefacts.
+This will waste resources on unnecessary and expensive follow-ups.
+The ML algorithm must be able to operate in real-time with a large data influx in order to be efficient.
+DL promises to outperform more classical ML approaches\citep{du2014machine}.
+We will investigate the validity of this claim.
+From our application we will see what DL can tell us about the SDSS transient data.
+
+%Thesis Structure
+This thesis has been structured in the following way:
+Chapter 1 will use Neural Nets as a drawing board for understanding the inner workings of machine learning methods and their successful application.
+We will need to know the subtleties of what is involved in machine learning and know how to evaluate our results in an objective way.
+Chapter 2 will layout the nature of the test case.
+We will detail what the SDSS sky survey entails; what data is collected and how it is structured. 
+Next, the current status of ML transient classification will be investigated.
+It is useful to see what others have discovered in their research.
+Chapter 3 lays out the research methodology.
+This will tackle the question of how to best achieve the research objectives in a logically sound way.
+Chapter 4 will provide an analysis and discussion of the results.
+Finally we conclude with closing remarks and future recommendations.
+
+
